@@ -57,14 +57,19 @@ print_cell(X-Y):-
     translate(X,W),
     write(W),
     write('-'),
-    write(Y).
+    write(Y),
+    write(' ').
 
 print_cell(X):-
     translate(X,W),
-    write(W).
+    write(W-0),    
+    write(' ').
 
 translate(b,'B').
 translate(w,'W').
 translate(e,'E').
+
+
+
 
 
