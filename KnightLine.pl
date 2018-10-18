@@ -3,9 +3,11 @@
 tile(e).
 
 tile(b-X):-
+    X \= 0,
     integer(X).
 
 tile(w-X):-
+    X \= 0,
     integer(X).
 
 player(b).
