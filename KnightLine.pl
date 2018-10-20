@@ -47,27 +47,27 @@ finalBoard([
 
 print_initial_board(Y):-
     initialBoard(X),
-    print_board(X,Y).
+    display_game(X,Y).
 
 print_final_board(Y):-
     finalBoard(X),
-    print_board(X,Y).
+    display_game(X,Y).
 
 
 print_mid_board(Y):-
     midBoard(X),
-    print_board(X,Y).
+    display_game(X,Y).
 
-print_board([],P):-
+display_game([],P):-
     write(' -'),
     translate(P,W),
     write(W).
 
 
-print_board([H|T],P):-
+display_game([H|T],P):-
     print_line(H),
     nl,
-    print_board(T,P).
+    display_game(T,P).
 
 print_line([]).
 print_line([H|T]):-
