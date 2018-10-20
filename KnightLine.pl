@@ -24,7 +24,13 @@ initialBoard([
     ]).
 
 
-
+midBoard([
+    [e,e,e,e,e,e],
+    [e,e,e,b-9,w-15,e],
+    [e,b-5,w-5,e,e,e],
+    [e,e,e,b-6,e,e],
+    [e,e,e,e,e,e]
+    ]).
 
 
 finalBoard([
@@ -39,6 +45,18 @@ finalBoard([
 
 %% print board %%
 
+print_initial_board(Y):-
+    initialBoard(X),
+    print_board(X,Y).
+
+print_final_board(Y):-
+    finalBoard(X),
+    print_board(X,Y).
+
+
+print_mid_board(Y):-
+    midBoard(X),
+    print_board(X,Y).
 
 print_board([],P):-
     write(' -'),
@@ -74,10 +92,3 @@ translate(e,'E').
 
 
 
-print_initial_board(Y):-
-    initialBoard(X),
-    print_board(X,Y).
-
-print_final_board(Y):-
-    finalBoard(X),
-    print_board(X,Y).
