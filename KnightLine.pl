@@ -24,6 +24,9 @@ initialBoard([
     ]).
 
 
+
+
+
 finalBoard([
     [e,e,e,b-4,e,e],
     [e,e,w-4,b-4,b-4,b-1],
@@ -71,5 +74,10 @@ translate(e,'E').
 
 
 
+print_initial_board(Y):-
+    initialBoard(X),
+    print_board(X,Y).
 
-
+print_final_board(Y):-
+    finalBoard(X),
+    print_board(X,Y).
