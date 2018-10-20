@@ -25,11 +25,11 @@ initialBoard([
 
 
 midBoard([
-    [e,e,e,e,e,e],
-    [e,e,e,b-9,w-15,e],
-    [e,b-5,w-5,e,e,e],
-    [e,e,e,b-6,e,e],
-    [e,e,e,e,e,e]
+        [e,e,e,e,e,e],
+        [e,e,e,b-9,w-15,e],
+        [e,b-1,w-5,e,e,e],
+        [e,e,b-10,e,e,e],
+        [e,e,e,e,e,e]
     ]).
 
 
