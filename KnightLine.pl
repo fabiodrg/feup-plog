@@ -74,7 +74,18 @@ print_line([H|T]):-
     print_cell(H),
     print_line(T).
 
+% print cells where Y < 10 %
 print_cell(X-Y):-
+    Y < 10,
+    translate(X,W),
+    write(W),
+    write('-0'),
+    write(Y),
+    write(' ').
+
+% print cells where Y > 10 %
+print_cell(X-Y):-
+    Y >= 10,
     translate(X,W),
     write(W),
     write('-'),
@@ -83,7 +94,8 @@ print_cell(X-Y):-
 
 print_cell(X):-
     translate(X,W),
-    write(W-0),    
+    write(W),
+    write('-00'),   
     write(' ').
 
 translate(b,'B').
