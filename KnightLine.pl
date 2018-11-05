@@ -1,3 +1,4 @@
+
 %%%%%%%% Pecas %%%%%%
 
 tile(e).
@@ -20,7 +21,7 @@ player(w).
 initialBoard([
         [e,e,e,e],
         [e,b-20,w-20,e],
-        [e,e,e,e]    
+        [e,e,e,e]
     ]).
 
 
@@ -53,7 +54,6 @@ print_final_board(Y):-
     finalBoard(X),
     display_game(X,Y).
 
-
 print_mid_board(Y):-
     midBoard(X),
     display_game(X,Y).
@@ -69,26 +69,33 @@ display_game([H|T],P):-
     nl,
     display_game(T,P).
 
+
 print_line([]).
 print_line([H|T]):-
-    print_cell(H),
-    print_line(T).
+        print_cell(H),
+        print_line(T).
 
+% print cells where Y < 10 %
 print_cell(X-Y):-
+    Y < 10,
     translate(X,W),
     write(W),
-    write('-'),
     write(Y),
-    write(' ').
+    write(' |').
+
+% print cells where Y > 10 %
+print_cell(X-Y):-
+    Y >= 10,
+    translate(X,W),
+    write(W),
+    write(Y),
+    write('|').
 
 print_cell(X):-
     translate(X,W),
-    write(W-0),    
-    write(' ').
+    write(W),
+    write('|').
 
 translate(b,'B').
 translate(w,'W').
-translate(e,'E').
-
-
-
+translate(e,'   ').
