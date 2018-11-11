@@ -1,3 +1,5 @@
+:-[utils].
+:- use_module(library(lists)).
 %%%%%%%% Pecas %%%%%%
 
 tile(e).
@@ -20,7 +22,7 @@ player(w).
 initialBoard([
         [e,e,e,e],
         [e,b-20,w-20,e],
-        [e,e,e,e]    
+        [e,e,e,e]
     ]).
 
 
@@ -53,7 +55,6 @@ print_final_board(Y):-
     finalBoard(X),
     display_game(X,Y).
 
-
 print_mid_board(Y):-
     midBoard(X),
     display_game(X,Y).
@@ -69,38 +70,118 @@ display_game([H|T],P):-
     nl,
     display_game(T,P).
 
+
 print_line([]).
 print_line([H|T]):-
-    print_cell(H),
-    print_line(T).
+        print_cell(H),
+        print_line(T).
 
 % print cells where Y < 10 %
 print_cell(X-Y):-
     Y < 10,
     translate(X,W),
     write(W),
-    write('-0'),
     write(Y),
-    write(' ').
+    write(' |').
 
 % print cells where Y > 10 %
 print_cell(X-Y):-
     Y >= 10,
     translate(X,W),
     write(W),
-    write('-'),
     write(Y),
-    write(' ').
+    write('|').
 
 print_cell(X):-
     translate(X,W),
     write(W),
-    write('-00'),   
-    write(' ').
+    write('|').
 
 translate(b,'B').
 translate(w,'W').
-translate(e,'E').
+translate(e,'   ').
 
+%%% validate moves
 
+%%valid_move(Board,Piece,Move):-
+test:-
+  initialBoard(Board),
+  findall(X,(move(1-1,X,Board), X \=e), Results),
+  write(Results).
 
+test2:-
+  midBoard(Board),
+  valid_moves(Board,b,ListOfMoves),
+  write(ListOfMoves).
+
+test3:-
+  midBoard(Board),
+  move([b,2-3,4-2,5],Board,NewBoard),
+  write(NewBoard).
+
+ move(Move,Board,NewBoard):-
+  nth0(0,Move,PlayerColor),
+  valid_moves(Board,PlayerColor,List),
+  nth0(2,Move,Destiny),
+  member(Destiny,List),
+  nth0(1,Move,Source),
+  nth0(3,Move,Number),
+  move_piece(Source,Destiny,Number,Board,NewBoard).
+
+valid_moves(Board,Player,ListOfMoves):-
+  findall(X,take_piece(X,Board,Player-_),Results),
+  check_forall(Results,Board,ListOfMoves,[]).
+
+check_forall([], _, Acc, Acc).
+check_forall([H|T], Board, ListOfMoves, Acc):-
+    	findall(X,(moves(H,X,Board), X \=e), Results),
+    	append(Results, Acc, Acc1),
+    	check_forall(T, Board, ListOfMoves, Acc1).
+
+  moves(X1-Y1,X2-Y2,Board):-
+    X2 is X1+2,
+    Y2 is Y1-1,
+    findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
+    Results \= [].
+
+  moves(X1-Y1,X2-Y2,Board):-
+    X2 is X1+2,
+    Y2 is Y1+1,
+    findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
+    Results \= [].
+
+  moves(X1-Y1,X2-Y2,Board):-
+    X2 is X1-1,
+    Y2 is Y1-2,
+    findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
+    Results \= [].
+
+  moves(X1-Y1,X2-Y2,Board):-
+    X2 is X1-2,
+    Y2 is Y1-1,
+    findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
+    Results \= [].
+
+  moves(X1-Y1,X2-Y2,Board):-
+    X2 is X1-2,
+    Y2 is Y1+1,
+    findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
+    Results \= [].
+
+  moves(X1-Y1,X2-Y2,Board):-
+    X2 is X1-1,
+    Y2 is Y1+2,
+    findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
+    Results \= [].
+
+  moves(X1-Y1,X2-Y2,Board):-
+    X2 is X1+1,
+    Y2 is Y1+2,
+    findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
+    Results \= [].
+
+  moves(X1-Y1,X2-Y2,Board):-
+    X2 is X1+1,
+    Y2 is Y1-2,
+    findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
+    Results \= [].
