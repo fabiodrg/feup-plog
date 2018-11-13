@@ -119,7 +119,102 @@ test3:-
   move([b,2-3,4-2,5],Board,NewBoard),
   write(NewBoard).
 
- move(Move,Board,NewBoard):-
+
+testBoard([
+[e,e,e,b-4,e,e],
+[e,e,w-4,b-4,b-4,b-1],
+[e,e,b-3,w-3,w-3,e],
+[b-2,w-2,w-2,w-2,b-2,e],
+[e,e,w-2,w-2,e,e],
+[e,w-2,e,w-2,e,e]
+]).
+
+test4:-
+  finalBoard(Board),
+  game_over(Board,Winner),
+  nl,
+  write(Winner).
+
+
+
+game_over(Board,Winner):-
+  take_piece(X-Y,Board,Color-_),
+  X1 is X+1,
+  take_piece(X1-Y,Board,ColorHorizontal-_),
+  Color = ColorHorizontal,
+  check_horizontal_win(X1-Y,Board,ColorHorizontal-_,Winner).
+
+game_over(Board,Winner):-
+  take_piece(X-Y,Board,Color-_),
+  X1 is X+1,
+  Y1 is Y+1,
+  take_piece(X1-Y1,Board,ColorHorizontal-_),
+  Color = ColorHorizontal,
+  check_diagonal_win(X1-Y1,Board,ColorHorizontal-_,Winner).
+
+game_over(Board,Winner):-
+  take_piece(X-Y,Board,Color-_),
+  X1 is X-1,
+  Y1 is Y+1,
+  take_piece(X1-Y1,Board,ColorHorizontal-_),
+  Color = ColorHorizontal,
+  check_otherdiagonal_win(X1-Y1,Board,ColorHorizontal-_,Winner).
+
+game_over(Board,Winner):-
+  take_piece(X-Y,Board,Color-_),
+  Y1 is Y+1,
+  take_piece(X-Y1,Board,ColorHorizontal-_),
+  Color = ColorHorizontal,
+  check_vertical_win(X-Y1,Board,ColorHorizontal-_,Winner).
+
+check_vertical_win(X-Y,Board,Color-_,ColorWon):-
+  Y1 is Y+1,
+  take_piece(X-Y1,Board,ColorCheck-_),
+  Color = ColorCheck,
+  Y2 is Y+1,
+  take_piece(X-Y2,Board,ColorCheck2-_),
+  Color = ColorCheck2,
+  write('Vertical'),
+  ColorWon is Color.
+
+check_diagonal_win(X-Y,Board,Color-_,ColorWon):-
+  X1 is X+1,
+  Y1 is Y+1,
+  take_piece(X1-Y1,Board,ColorCheck-_),
+  Color = ColorCheck,
+  X2 is X1+1,
+  Y2 is Y1+1,
+  take_piece(X2-Y2,Board,ColorCheck2-_),
+  Color = ColorCheck2,
+  write('Diagonal'),
+  ColorWon is Color.
+
+check_otherdiagonal_win(X-Y,Board,Color-_,ColorWon):-
+  X1 is X-1,
+  Y1 is Y+1,
+  take_piece(X1-Y1,Board,ColorCheck-_),
+  Color = ColorCheck,
+  X2 is X1-1,
+  Y2 is Y1+1,
+  take_piece(X2-Y2,Board,ColorCheck2-_),
+  Color = ColorCheck2,
+  write('Other Diagonal'),
+  ColorWon = Color.
+
+check_horizontal_win(X-Y,Board,Color-_,ColorWon):-
+  X1 is X+1,
+  take_piece(X1-Y,Board,ColorCheck-_),
+  Color = ColorCheck,
+  X2 is X1+1,
+  take_piece(X2-Y,Board,ColorCheck2-_),
+  Color = ColorCheck2,
+  write('Horizontal'),
+  ColorWon = Color.
+
+
+
+
+move(Move,Board,NewBoard):-
   nth0(0,Move,PlayerColor),
   valid_moves(Board,PlayerColor,List),
   nth0(2,Move,Destiny),
