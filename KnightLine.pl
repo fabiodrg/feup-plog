@@ -135,7 +135,66 @@ test4:-
   nl,
   write(Winner).
 
+test5:-
+  midBoard(Board),
+  value(Board,b,_).
 
+%%%value group of functions
+%%% esta nã consegui implementar ainda mas tinha que dá um valor mediante a posição das peças num tabuleiro
+/* a minha ideia tinha sido verificar todas a peças de um determinado jogador
+cada peça verificava quantas tem nas diferentes posições possiveis de vitoria
+cada vez que houvesse uma peça seguida somava um ao valor que era inicializado a 0
+o valor usado era o maior entre todas as direcções.
+Por exemplo se o maior numero de peças pretas seguidas fosse para baixo,
+supondo que havia 2 peças seguidas para o lado direito e 3 para baizo o value era 3
+*/
+value(Board,Player,Value):-
+  findall(X,take_piece(X,Board,Player-_),Results),
+  check_all_pieces(Results,Board,Value,PLayer).
+
+check_all_pieces([],Board,Value,Player).
+check_all_pieces([H|T], Board,Value,Player):-
+  check_down(H,Board,Value,Player,NewValue),
+  check_right(H,Board,Value,Player,NewValue2),
+  check_rightdiagonal(H,Board,Value,Player),
+  check_leftdiagonal(H,Board,Value,Player),
+  check_all_pieces(T,Board,Value,Player).
+
+check_down(X-Y,Board,Value,Player,NewValue):-
+  Y1 is Y+1,
+  take_piece(X-Y1,Board,PieceColor-_),
+  PieceColor = Player,
+  Value1 is Value+1,
+  check_down(X-Y1,Board,Value1,Player),
+  NewValue = Value1.
+
+check_right(X-Y,Board,Value,Player,NewValue):-
+  X1 is X+1,
+  take_piece(X1-Y,Board,PieceColor-_),
+  PieceColor = Player,
+  Value1 is Value+1,
+  check_right(X1-Y,Board,Value1,Player),
+  NewValue = Value1.
+
+check_rightdiagonal(X-Y,Board,Value,Player,NewValue):-
+  X1 is X+1,
+  Y1 is Y+1,
+  take_piece(X1-Y1,Board,PieceColor-_),
+  PieceColor = Player,
+  Value1 is Value+1,
+  check_ightdiagonal(X1-Y1,Board,Value1,Player),
+  NewValue = Value1.
+
+check_leftdiagonal(X-Y,Board,Value,Player,NewValue):-
+  X1 is X-1,
+  Y1 is Y+1,
+  take_piece(X1-Y1,Board,PieceColor-_),
+  PieceColor = Player,
+  Value1 is Value+1,
+  check_leftdiagonal(X1-Y1,Board,Value1,Player),
+  NewValue = Value1.
+
+%%% Verifica se algum dos jogadores retorna a cor do jogador que venceu, VER TEST EXEMPLO 4
 
 game_over(Board,Winner):-
   take_piece(X-Y,Board,Color-_),
@@ -211,9 +270,7 @@ check_horizontal_win(X-Y,Board,Color-_,ColorWon):-
   write('Horizontal'),
   ColorWon = Color.
 
-
-
-
+%%% faz os moves e retorna o new board o move tem que ser do tipo [cor,pos inicial,pos final, num de peças] VER TEST EXEMPLO 3
 move(Move,Board,NewBoard):-
   nth0(0,Move,PlayerColor),
   valid_moves(Board,PlayerColor,List),
@@ -223,6 +280,7 @@ move(Move,Board,NewBoard):-
   nth0(3,Move,Number),
   move_piece(Source,Destiny,Number,Board,NewBoard).
 
+%%% retorna lista de valid_moves, VER  TEST EXEMPLO 2
 valid_moves(Board,Player,ListOfMoves):-
   findall(X,take_piece(X,Board,Player-_),Results),
   check_forall(Results,Board,ListOfMoves,[]).
