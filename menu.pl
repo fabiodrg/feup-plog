@@ -12,15 +12,31 @@ menu:-
     validate_start(X),
     print_initial_board(X).
 
+play:-
+  clear_console,
+  write('---------------------------------------'),nl,
+  write('---------------------------------------'),nl,
+  write('-          KnightLine Line            -'),nl,
+  write('-        Option 1: Play Game          -'),nl,
+  write('-       Option 2: Read Instructions   -'),nl,
+  write('-       Option 3: Exit Game           -'),nl,
+  write('---------------------------------------'),nl,
+  write('---------------------------------------'),nl.
 
 
-printMainMenu:-
+
+
+
+
+
+
+printGameMenu:-
   clear_console,
   write('1 - Player VS Player'),
   nl,
   write('2 - Payer VS Computer '),
   nl,
-  write('3 - Computer VS Computer')
+  write('3 - Computer VS Computer'),
   nl,
   write('Choose an option:  '),nl,
   getChar(Input),
@@ -46,24 +62,36 @@ validate_start(X):-
   nl.
 
 
-  validate_start(X):-
-    X = 'w',
-    write('Valid'),
-    nl.
+validate_start(X):-
+  X = 'w',
+  write('Valid'),
+  nl.
+
+test_move:-
+  initialBoard(X),
+  make_move(X,b).
+
+create_move(Player,InitialCoords,FinalCoords,Number,Move):-
+  Move = [Player,InitialCoords,FinalCoords,Number,Number].
 
 
-
-  move(Move,Board,NewBoard):-
-    write('From to?'),
-    nl,
-    write('X: '),
-    read(X1),
-    write('Y: '),
-    read(Y1),
-    write('Where to?'),
-    nl,
-    write('X: '),
-    read(X2),
-    write('Y: '),
-    read(Y2).
-    take_piece(X1-Y1,Board,Piece).
+make_move(Board,Player):-
+  write('From?'),
+  nl,
+  read(X1),
+  read(Y1),
+  nl,
+  valid_moves(Board,Player,ValidMoves),
+  write(ValidMoves),
+  nl,
+  write('Where to?'),
+  nl,
+  read(X2),
+  read(Y2),
+  nl,
+  write('How Many Pieces?'),
+  nl,
+  read(Number),
+  create_move(b,X1-Y1,X2-Y2,Number,Move),
+  move(Move,Board,NewBoard),
+  display_game(NewBoard,b).

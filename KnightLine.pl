@@ -115,9 +115,11 @@ test2:-
   write(ListOfMoves).
 
 test3:-
-  midBoard(Board),
-  move([b,2-3,4-2,5],Board,NewBoard),
-  write(NewBoard).
+  initialBoard(Board),
+  move([b,1-1,3-0,5],Board,NewBoard),
+  write(NewBoard),
+  nl,
+  display_game(NewBoard,b).
 
 
 testBoard([
@@ -148,9 +150,10 @@ o valor usado era o maior entre todas as direcções.
 Por exemplo se o maior numero de peças pretas seguidas fosse para baixo,
 supondo que havia 2 peças seguidas para o lado direito e 3 para baizo o value era 3
 */
+/*Notas do professor contar melhor jogada o numero de filas de peças seguidas maiores que uma*/
 value(Board,Player,Value):-
   findall(X,take_piece(X,Board,Player-_),Results),
-  check_all_pieces(Results,Board,Value,PLayer).
+  check_all_pieces(Results,Board,Value,Player).
 
 check_all_pieces([],Board,Value,Player).
 check_all_pieces([H|T], Board,Value,Player):-

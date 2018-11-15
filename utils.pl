@@ -3,6 +3,32 @@
 
 %%%%% matrix utilities
 
+
+%%%% last three functions not fully working
+append_last_collumn([],Element,FinalBoard,FinalBoard).
+append_last_collumn([H|T],Element,NewBoard,FinalBoard):-
+  append([H],[e],NewBoard),
+  append_last_collumn(T,Element,NewBoard),
+  FinalBoard = NewBoard.
+
+
+
+append_last_row(Board,Element,FinalBoard).
+  get_width(Board,BoardWith),
+  create_new_row(BoardWith,[],[],FinalRow),
+  append(Board,NewRow,FinalBoard).
+
+
+create_new_row(BoardWith,NewRow,NewRow).
+create_new_row(BoardWith,Row,NewRow),
+  BoardWith \= 0,
+  BoardWith1 is BoardWith-1,
+  append(Row,[e],NewRow),
+  create_new_row(BoardWith,Row,NewRow).
+%%%%%%%%%%% until here
+
+
+
 %%% para ter um elemento de uma certa posição numa list
 get_elem(Board,Index,Elem):-
   nth0(Index,Board,Elem).
@@ -38,7 +64,7 @@ replace_in_matrix(X1-Y1,Board,Element,NewBoard):-
 move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
   take_piece(X1-Y1,Board,PiecePlayer-PieceNumber),
   NewPieceNumber is PieceNumber-Number,
-  replace_in_matrix(X1-Y1,Board,PiecePlayer-Number,NewBoard),
+  replace_in_matrix(X1-Y1,Board,PiecePlayer-NewPieceNumber,NewBoard),
   replace_in_matrix(X2-Y2,NewBoard,PiecePlayer-Number,FinalBoard).
 
 %%% retorna width e height de uma matrix
