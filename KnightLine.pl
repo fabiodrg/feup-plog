@@ -150,6 +150,7 @@ o valor usado era o maior entre todas as direcções.
 Por exemplo se o maior numero de peças pretas seguidas fosse para baixo,
 supondo que havia 2 peças seguidas para o lado direito e 3 para baizo o value era 3
 */
+/*Notas do professor contar melhor jogada o numero de filas de peças seguidas maiores que uma*/
 value(Board,Player,Value):-
   findall(X,take_piece(X,Board,Player-_),Results),
   check_all_pieces(Results,Board,Value,Player).
