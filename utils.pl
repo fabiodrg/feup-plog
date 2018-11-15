@@ -38,7 +38,7 @@ replace_in_matrix(X1-Y1,Board,Element,NewBoard):-
 move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
   take_piece(X1-Y1,Board,PiecePlayer-PieceNumber),
   NewPieceNumber is PieceNumber-Number,
-  replace_in_matrix(X1-Y1,Board,PiecePlayer-Number,NewBoard),
+  replace_in_matrix(X1-Y1,Board,PiecePlayer-NewPieceNumber,NewBoard),
   replace_in_matrix(X2-Y2,NewBoard,PiecePlayer-Number,FinalBoard).
 
 %%% retorna width e height de uma matrix
