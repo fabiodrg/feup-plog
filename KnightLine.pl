@@ -341,3 +341,16 @@ check_forall([H|T], Board, ListOfMoves, Acc):-
     Y2 is Y1-2,
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
+
+
+askPlayerInput(RowSrc-ColSrc, Num, RowDst-ColDst):-
+	% ask the source stack coordinates %
+	write('Player X, write the row and col coordinates for stack source'), nl,
+	write('Row ? '), getInt(RowSrc), getInt(_),
+	write('Column ? '), getInt(ColSrc), getInt(_),
+	% ask how many tiles to be moved %
+	write('How many tiles ? '), getInt(Num), getInt(_),
+	% ask the destination coordinates %
+	write('Write the row and col for stack destination'), nl,
+	write('Row ? '), getInt(RowDst), getInt(_),
+	write('Column ? '), getInt(ColDst), getInt(_).
