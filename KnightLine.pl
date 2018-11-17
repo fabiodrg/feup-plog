@@ -365,11 +365,21 @@ startPlayerVPlayer:-
 	% initialize the board %
 	initialBoard(Board),
 	display_game(Board, w),
+	gamePlayerVPlayer(Board).	
+
+gamePlayerVPlayer(Board):-
+	gameWhitePlayer(Board, NewBoard),
+	gameBlackPlayer(NewBoard, NewNewBoard),
+	gamePlayerVPlayer(NewNewBoard).
+
+gameWhitePlayer(Board, NewBoard):-
 	% ask the input for white tiles player %
 	askPlayerInput(w, RowSrc_White-ColSrc_White, NumWhite, RowDst_White-ColDst_White),
 	move([w, ColSrc_White-RowSrc_White, ColDst_White-RowDst_White, NumWhite], Board, NewBoard),
-	display_game(NewBoard, w),
-	% ask the input for black tiles player %
+	display_game(NewBoard, w).
+
+gameBlackPlayer(Board, NewBoard):-
+	% ask the input for white tiles player %
 	askPlayerInput(b, RowSrc_Black-ColSrc_Black, NumBlack, RowDst_Black-ColDst_Black),
-	move([b, ColSrc_Black-RowSrc_Black, ColDst_Black-RowDst_Black, NumBlack], NewBoard, NewNewBoard),
-	display_game(NewNewBoard, b).
+	move([b, ColSrc_Black-RowSrc_Black, ColDst_Black-RowDst_Black, NumBlack], Board, NewBoard),
+	display_game(NewBoard, b).
