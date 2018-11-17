@@ -350,26 +350,28 @@ check_forall([H|T], Board, ListOfMoves, Acc):-
     Results \= [].
 
 askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
-	% ask the source stack coordinates %
-	write('Player X, write the row and col coordinates for stack source'), nl,
-	write('Row ? '), getInt(RowSrc), getInt(_),
-	write('Column ? '), getInt(ColSrc), getInt(_),
+	% Output the current player %
+	write('======= '), 
+	( (Player = b, write('Black')) ; (Player = w, write('White')) ),
+	write(' Player ======='), nl,
+	% ask the source tile stack coordinates % 
+	write('[From] Row ? '), getInt(RowSrc), getInt(_),
+	write('[From] Column ? '), getInt(ColSrc), getInt(_),
 	% ask how many tiles to be moved %
 	write('How many tiles ? '), getInt(Num), getInt(_),
 	% ask the destination coordinates %
-	write('Write the row and col for stack destination'), nl,
-	write('Row ? '), getInt(RowDst), getInt(_),
-	write('Column ? '), getInt(ColDst), getInt(_).
+	write('[To] Row ? '), getInt(RowDst), getInt(_),
+	write('[To] Column ? '), getInt(ColDst), getInt(_).
 
 startPlayerVPlayer:-
 	% initialize the board %
 	initialBoard(Board),
 	display_game(Board, w),
 	% ask the input for white tiles player %
-	askPlayerInput(RowSrc_White-ColSrc_White, NumWhite, RowDst_White-ColDst_White),
+	askPlayerInput(w, RowSrc_White-ColSrc_White, NumWhite, RowDst_White-ColDst_White),
 	move([w, ColSrc_White-RowSrc_White, ColDst_White-RowDst_White, NumWhite], Board, NewBoard),
 	display_game(NewBoard, w),
 	% ask the input for black tiles player %
-	askPlayerInput(RowSrc_Black-ColSrc_Black, NumBlack, RowDst_Black-ColDst_Black),
+	askPlayerInput(b, RowSrc_Black-ColSrc_Black, NumBlack, RowDst_Black-ColDst_Black),
 	move([b, ColSrc_Black-RowSrc_Black, ColDst_Black-RowDst_Black, NumBlack], NewBoard, NewNewBoard),
 	display_game(NewNewBoard, b).
