@@ -60,9 +60,7 @@ print_mid_board(Y):-
     display_game(X,Y).
 
 display_game([],P):-
-    write(' -'),
-    translate(P,W),
-    write(W).
+    nl.
 
 
 display_game([H|T],P):-
