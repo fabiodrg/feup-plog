@@ -24,6 +24,26 @@ create_new_row(BoardWith,Row,NewRow),
   BoardWith1 is BoardWith-1,
   append(Row,[e],NewRow),
   create_new_row(BoardWith,Row,NewRow).
+
+isRowEmpty([H|T], N):-
+	% find the row in the matrix %
+	nth0(N, [H|T], Row),
+	% check if all vals are 'e' %
+	isRowEmpty(Row).
+
+isRowEmpty([]).
+
+isRowEmpty([H|T]):-
+	H = e,
+	isRowEmpty(T).
+
+isColumnEmpty([], _).
+isColumnEmpty([H|T], N):-
+	% H is a list, the first matrix row %
+	nth0(N, H, Tile),
+	Tile = e,
+	isColumnEmpty(T, N).
+
 %%%%%%%%%%% until here
 
 %%% insert coords
