@@ -273,7 +273,14 @@ check_horizontal_win(X-Y,Board,Color-_,ColorWon):-
   write('Horizontal'),
   ColorWon = Color.
 
-%%% faz os moves e retorna o new board o move tem que ser do tipo [cor,pos inicial,pos final, num de peças] VER TEST EXEMPLO 3
+
+% Trata de fazer o move de tiles de uma origem para um destino
+% Trata também de assegurar que a jogada é valida
+%
+% @param Move - Uma lista do tipo [player, source col-row, destination col-row, number of tile]
+% For example, [b, 1-1, 3-0, 10], moves 10 white tiles from row 1, col 1 to row 0 and col 3
+% @param Board - O tabuleiro atual
+% @param NewBoard - O tabuleiro resultante após a jogada
 move(Move,Board,NewBoard):-
   nth0(0,Move,PlayerColor),
   valid_moves(Board,PlayerColor,List),
@@ -360,9 +367,9 @@ startPlayerVPlayer:-
 	display_game(Board, w),
 	% ask the input for white tiles player %
 	askPlayerInput(RowSrc_White-ColSrc_White, NumWhite, RowDst_White-ColDst_White),
-	move([b, RowSrc_White-ColSrc_White, RowDst_White-ColDst_White, NumWhite], Board, NewBoard),
+	move([b, ColSrc_White-RowSrc_White, ColDst_White-RowDst_White, NumWhite], Board, NewBoard),
 	display_game(NewBoard, w),
 	% ask the input for black tiles player %
 	askPlayerInput(RowSrc_Black-ColSrc_Black, NumBlack, RowDst_Black-ColDst_Black),
-	move([b, RowSrc_Black-ColSrc_Black, RowDst_Black-ColDst_Black, NumBlack], NewBoard, NewNewBoard),
+	move([w, ColSrc_Black-RowSrc_Black, ColDst_Black-RowDst_Black, NumBlack], NewBoard, NewNewBoard),
 	display_game(NewNewBoard, b).
