@@ -342,7 +342,6 @@ check_forall([H|T], Board, ListOfMoves, Acc):-
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
-
 askPlayerInput(RowSrc-ColSrc, Num, RowDst-ColDst):-
 	% ask the source stack coordinates %
 	write('Player X, write the row and col coordinates for stack source'), nl,
@@ -354,3 +353,16 @@ askPlayerInput(RowSrc-ColSrc, Num, RowDst-ColDst):-
 	write('Write the row and col for stack destination'), nl,
 	write('Row ? '), getInt(RowDst), getInt(_),
 	write('Column ? '), getInt(ColDst), getInt(_).
+
+startPlayerVPlayer:-
+	% initialize the board %
+	initialBoard(Board),
+	display_game(Board, w),
+	% ask the input for white tiles player %
+	askPlayerInput(RowSrc_White-ColSrc_White, NumWhite, RowDst_White-ColDst_White),
+	move([b, RowSrc_White-ColSrc_White, RowDst_White-ColDst_White, NumWhite], Board, NewBoard),
+	display_game(NewBoard, w),
+	% ask the input for black tiles player %
+	askPlayerInput(RowSrc_Black-ColSrc_Black, NumBlack, RowDst_Black-ColDst_Black),
+	move([b, RowSrc_Black-ColSrc_Black, RowDst_Black-ColDst_Black, NumBlack], NewBoard, NewNewBoard),
+	display_game(NewNewBoard, b).
