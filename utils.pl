@@ -5,19 +5,18 @@
 
 
 %%%% last three functions not fully working
+
+%%%%% função nth0 pode fazer isto mais facilmente
 append_last_collumn([],Element,FinalBoard,FinalBoard).
 append_last_collumn([H|T],Element,NewBoard,FinalBoard):-
   append([H],[e],NewBoard),
   append_last_collumn(T,Element,NewBoard),
   FinalBoard = NewBoard.
 
-
-
 append_last_row(Board,Element,FinalBoard).
   get_width(Board,BoardWith),
   create_new_row(BoardWith,[],[],FinalRow),
   append(Board,NewRow,FinalBoard).
-
 
 create_new_row(BoardWith,NewRow,NewRow).
 create_new_row(BoardWith,Row,NewRow),
@@ -27,6 +26,62 @@ create_new_row(BoardWith,Row,NewRow),
   create_new_row(BoardWith,Row,NewRow).
 %%%%%%%%%%% until here
 
+%%% insert coords
+
+insert_Coords(Board,NewBoard):-
+    proper_length(Board,VerticalLength),
+    insert_vertical(Board,VerticalLength,0,FinalBoard),
+    last(FinalBoard,List),
+    proper_length(List,HorizontalLength),
+    create_hindex_list([],HorizontalLength,0,FinalList),
+    nth0(0,NewBoard,FinalList,FinalBoard).
+
+
+test_insertBoard:-
+  insert_Coords([
+          [e,e,e,e],
+          [e,b-20,w-20,e],
+          [e,e,e,e]
+      ],X1),
+  write(X1).
+
+test_insert:-
+  create_hindex_list([],5,0,FinalList),
+  write(FinalList).
+
+test_insertVertical:-
+  insert_vertical([
+          [e,e,e,e],
+          [e,b-20,w-20,e],
+          [e,e,e,e]
+      ],3,0,FinalBoard),
+      write(FinalBoard).
+
+
+insert_vertical(FinalBoard,Size,Size,FinalBoard).
+insert_vertical(Board,Size,Index,FinalBoard):-
+  Index < Size,
+  nth0(Index,Board,Elem),
+  nth0(0,NewElem,Index,Elem),
+  replace_item(Board,Index,NewElem,NewBoard),
+  Index1 is Index+1,
+  insert_vertical(NewBoard,Size,Index1,FinalBoard).
+
+
+
+
+create_hindex_list(FinalList,Size,Size,FinalList).
+create_hindex_list(List,Size,Index,FinalList):-
+    Index < Size,
+    Index = 0 ->
+    nth0(Index,Newlist,e,List),
+    Index1 is Index+1,
+    create_hindex_list(Newlist,Size,Index1,FinalList);
+    Index2 is Index-1,
+    nth0(Index,Newlist,Index2,List),
+    Index1 is Index+1,
+    create_hindex_list(Newlist,Size,Index1,FinalList),
+    FinalList = NewList.
 
 
 %%% para ter um elemento de uma certa posição numa list
