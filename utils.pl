@@ -336,4 +336,8 @@ getChar(Input):-
 
 getInt(Input):-
 	get_code(TempInput),
-	Input is TempInput - 48.
+	% compute the decimal digit by subtracting 48, the ASCII code for number 0 %
+	Input is TempInput - 48,
+	% check the range. If Input isn't in [0,9], than the input was any other char %
+	Input >= 0,
+	Input =< 9.
