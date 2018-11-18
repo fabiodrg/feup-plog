@@ -11,28 +11,42 @@ createEmptyRow(BoardWidth,Row,NewRow):-
 	BoardWidth \= 0,
 	NewBoardWidth is BoardWidth - 1,
 	append(Row,[e],Aux),
-	write(Aux),nl,
 	createEmptyRow(NewBoardWidth,Aux,NewRow).
 
 appendEmptyRowTop(Board, NewBoard):-
-	get_width(Board,HorizontalLength),
-	createEmptyRow(HorizontalLength, EmptyRow),
-	append([EmptyRow], Board, NewBoard).
+	\+ isRowEmpty(Board,0) -> (
+		get_width(Board,HorizontalLength),
+		createEmptyRow(HorizontalLength, EmptyRow),
+		append([EmptyRow], Board, NewBoard)
+	) ; Board = NewBoard.
 
 appendEmptyRowBottom(Board, NewBoard):-
-	get_width(Board,HorizontalLength),
-	createEmptyRow(HorizontalLength, EmptyRow),
-	append(Board, [EmptyRow], NewBoard).
+	get_height(Board, Height), IndexLastRow is Height - 1,
+	\+ isRowEmpty(Board, IndexLastRow) -> (
+		get_width(Board,HorizontalLength),
+		createEmptyRow(HorizontalLength, EmptyRow),
+		append(Board, [EmptyRow], NewBoard)
+	) ; Board = NewBoard.
 
-appendEmptyColumnLeft([], []).
-appendEmptyColumnLeft([H|T], [Hnew|Tnew]):-
+appendEmptyColumnLeft_([], []).
+appendEmptyColumnLeft_([H|T], [Hnew|Tnew]):-
 	append([e], H, Hnew),
-	appendEmptyColumnLeft(T, Tnew).
+	appendEmptyColumnLeft_(T, Tnew).
+appendEmptyColumnLeft(Board, NewBoard):-
+	\+ isColumnEmpty(Board, 0) -> (
+		appendEmptyColumnLeft_(Board,NewBoard)
+	) ; Board = NewBoard.
 
-appendEmptyColumnRight([], []).
-appendEmptyColumnRight([H|T], [Hnew|Tnew]):-
+appendEmptyColumnRight_([], []).
+appendEmptyColumnRight_([H|T], [Hnew|Tnew]):-
 	append(H, [e], Hnew),
-	appendEmptyColumnRight(T, Tnew).
+	appendEmptyColumnRight_(T, Tnew).
+
+appendEmptyColumnRight(Board,NewBoard):-
+	get_width(Board, Width), IndexLastCol is Width - 1,
+	\+ isColumnEmpty(Board, IndexLastCol) -> (
+		appendEmptyColumnRight_(Board,NewBoard)
+	) ; Board = NewBoard.
 
 isRowEmpty([H|T], N):-
 	% find the row in the matrix %
@@ -53,17 +67,11 @@ isColumnEmpty([H|T], N):-
 	Tile = e,
 	isColumnEmpty(T, N).
 
-stretchBoard(Board, NewBoard):-
-	% if the first row is not empty, add an empty row at the board's top %
-	\+ isRowEmpty(Board,0) -> appendEmptyRowTop(Board, Board1),
-	% if the last row is not empty, add an empty row at the boards' bottom %
-	get_height(Board1, Height), IndexLastRow is Height - 1,
-	\+ isRowEmpty(Board1, IndexLastRow) -> appendEmptyRowBottom(Board1, Board2),
-	% if the left column is not empty, add an empty column in the left side %
-	\+ isColumnEmpty(Board2, 0) -> appendEmptyColumnLeft(Board2, Board3),
-	% if the right column is not empty, add an empty column in the right side %
-	get_width(Board3, Width), IndexLastCol is Width - 1,
-	\+ isColumnEmpty(Board3, IndexLastCol) -> appendEmptyColumnRight(Board3, NewBoard).
+% if the top left corner is not empty, add an empty row at the board's top and empty column on left %
+%(\+ isRowEmpty(Board,0), \+ isColumnEmpty(Board, 0)) -> (appendEmptyRowTop(Board, Board1), appendEmptyColumnLeft(Board1, NewBoard));
+% if the top right corner is not empty, add an empty row at board's top and empty column on right %
+%(\+ isRowEmpty(Board,0), \+ isColumnEmpty(Board, 0)) -> (appendEmptyRowTop(Board, Board1), appendEmptyColumnLeft(Board1, NewBoard));
+%stretchBoard(Board, NewBoard).
 
 %%%%%%%%%%% until here
 
