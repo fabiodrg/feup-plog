@@ -412,12 +412,16 @@ askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 	write('[To] Row ? '), getNumber(RowDst),
 	write('[To] Column ? '), getNumber(ColDst).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%% GAME ROUNDS %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Handles the first white player round, which is a special case
 % @param Board - The inital game board
 % @param NewBoard - The resultant board
 gameWhitePlayerFirstRound(Board, NewBoard):-
 	% display current game state %
-	display_game(Board),
+	display_withcoords(Board),
 	% ask the input for white tiles player %
 	askWhitePlayerFirstInput(RowDst_White-ColDst_White),
 	move([w, 2-1, ColDst_White-RowDst_White, 1], Board, Board1) -> (
@@ -466,6 +470,17 @@ gameBlackPlayer(Board, NewBoard):-
 		gameBlackPlayer(Board, NewBoard)
 	).
 
+
+choose_move(Board,Level,Move):-
+	Level = 1,
+	create_randomMove(Board,NewMove,b),
+	nth0(0,NewNewMove,b,NewMove),
+	random_pieceNumber(Board,NewNewMove,Number),
+	nth0(3,Move,Number,NewNewMove).
+
+gameBlackComputerEasy(Board,NewBoard):-
+  	choose_move(Board,1,Move),
+  	move(Move,Board,NewBoard).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% GAMES MODE %%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -476,9 +491,69 @@ gamePlayerVPlayer(Board):-
 	gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
 	gamePlayerVPlayer(NewNewBoard).
 
+gamePlayerVComputer(Board):-
+  	gameBlackComputerEasy(Board,NewBoard),
+  	gameWhitePlayer(NewBoard,NewNewBoard),
+  	gamePlayerVComputer(NewNewBoard).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% INITIALIZE GAMES %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initializes a Player VS Player game
 startPlayerVPlayer:-
 	% initialize the board %
 	initialBoard(Board),
 	gameWhitePlayerFirstRound(Board, NewBoard), clear_console,
 	gamePlayerVPlayer(NewBoard).
+
+startPlayerVComputer:-
+    clear_console,
+    initialBoard(Board),
+	gameWhitePlayerFirstRound(Board, NewBoard), clear_console,
+    gamePlayerVComputer(NewBoard).
+
+test_choose:-
+  initialBoard(Board),
+  choose_move(Board,1,Move),
+  move(Move,Board,NewBoard),
+  display_withcoords(NewBoard,X),
+  display_game(X,b).
+
+
+test_blackComputer:-
+  initialBoard(Board),
+  gameBlackComputerEasy(Board,NewBoard),
+  display_withcoords(NewBoard,X),
+  display_game(X,b).
+
+
+
+test_random:-
+  midBoard(X),
+  valid_moves(X,b,ListOfMoves),
+  get_width(X,Width),
+  nl,
+  create_randomMove(X,Move,b),
+  write(Move),
+  nl.
+
+random_pieceNumber(Board,Move,Number):-
+  nth0(1,Move,Elem),
+  take_piece(Elem,Board,_-PieceNumber),
+  random(1,PieceNumber,Number).
+
+
+create_randomMove(Board,Move,Player):-
+    findall(X,take_piece(X,Board,Player-_),Results),
+    proper_length(Results,Length),
+    random(0,Length,RandomStart),
+    nth0(RandomStart,Results,Elem),
+    findall(X,(moves(Elem,X,Board), X \=e), NewResults),
+    proper_length(NewResults,NewLength),
+    random(0,Length,RandomEnd),
+    nth0(RandomEnd,NewResults,NewElem),
+    nth0(0,InitialMove,Elem,[]),
+    nth0(1,Move,NewElem,InitialMove).
+
+create_move(Player,InitialCoords,FinalCoords,Number,Move):-
+  Move = [Player,InitialCoords,FinalCoords,Number].
