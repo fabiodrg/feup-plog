@@ -16,7 +16,6 @@ player(b).
 
 player(w).
 
-
 %%% Boards %%%%%
 
 initialBoard([
@@ -47,9 +46,18 @@ finalBoard([
 
 %% print board %%
 
+test_insertBoard2:-
+  midBoard(Board),
+  display_withcoords(Board,b).
+
+display_withcoords(Board,Player):-
+  insert_Coords(Board,X1),
+  display_game(X1,Player).
+
 print_initial_board(Y):-
     initialBoard(X),
-    display_game(X,Y).
+    insert_Coords(X,Z),
+    display_game(Z,Y).
 
 print_final_board(Y):-
     finalBoard(X),
@@ -91,74 +99,48 @@ print_cell(X-Y):-
     write('|').
 
 print_cell(X):-
+    X = e,
     translate(X,W),
     write(W),
     write('|').
+
+print_cell(X):-
+  write(X),
+  write('  |').
 
 translate(b,'B').
 translate(w,'W').
 translate(e,'   ').
 
-%%% validate moves
-
-%%valid_move(Board,Piece,Move):-
-test:-
-  initialBoard(Board),
-  findall(X,(move(1-1,X,Board), X \=e), Results),
-  write(Results).
-
-test2:-
-  midBoard(Board),
-  valid_moves(Board,b,ListOfMoves),
-  write(ListOfMoves).
-
-test3:-
-  initialBoard(Board),
-  move([b,1-1,3-0,5],Board,NewBoard),
-  write(NewBoard),
-  nl,
-  display_game(NewBoard,b).
-
-
-testBoard([
-[e,e,e,b-4,e,e],
-[e,e,w-4,b-4,b-4,b-1],
-[e,e,b-3,w-3,w-3,e],
-[b-2,w-2,w-2,w-2,b-2,e],
-[e,e,w-2,w-2,e,e],
-[e,w-2,e,w-2,e,e]
-]).
-
-test4:-
-  finalBoard(Board),
-  game_over(Board,Winner),
-  nl,
-  write(Winner).
-
-test5:-
-  midBoard(Board),
-  value(Board,b,_).
-
-%%%value group of functions
-%%% esta nã consegui implementar ainda mas tinha que dá um valor mediante a posição das peças num tabuleiro
-/* a minha ideia tinha sido verificar todas a peças de um determinado jogador
-cada peça verificava quantas tem nas diferentes posições possiveis de vitoria
-cada vez que houvesse uma peça seguida somava um ao valor que era inicializado a 0
-o valor usado era o maior entre todas as direcções.
-Por exemplo se o maior numero de peças pretas seguidas fosse para baixo,
-supondo que havia 2 peças seguidas para o lado direito e 3 para baizo o value era 3
+/*
+* This  Returns the value of the board accordingly
+* to the position of the pieces of one player.
+*Params
+*@Board - We need to give the board.
+*@Player - We need to give the player we want to check.
+*@Value - The value is returned.
+*Notes: This predicate is not well implemented
 */
-/*Notas do professor contar melhor jogada o numero de filas de peças seguidas maiores que uma*/
 value(Board,Player,Value):-
   findall(X,take_piece(X,Board,Player-_),Results),
-  check_all_pieces(Results,Board,Value,Player).
+  write(Results),
+  check_all_pieces(Results,Board,Player,Value).
 
 check_all_pieces([],Board,Value,Player).
 check_all_pieces([H|T], Board,Value,Player):-
-  check_down(H,Board,Value,Player,NewValue),
-  check_right(H,Board,Value,Player,NewValue2),
-  check_rightdiagonal(H,Board,Value,Player),
-  check_leftdiagonal(H,Board,Value,Player),
+  check_down(H,Board,0,Player,NewValue1),
+  write(NewValue1),
+  nl,
+  check_right(H,Board,0,Player,NewValue2),
+  write(NewValue2),
+  nl,
+  check_rightdiagonal(H,Board,0,Player,NewValue3),
+  write(NewValue3),
+  nl,
+  check_leftdiagonal(H,Board,0,Player,NewValue4),
+  write(NewValue4),
+  nl,
+  write(Value),
   check_all_pieces(T,Board,Value,Player).
 
 check_down(X-Y,Board,Value,Player,NewValue):-
@@ -166,7 +148,7 @@ check_down(X-Y,Board,Value,Player,NewValue):-
   take_piece(X-Y1,Board,PieceColor-_),
   PieceColor = Player,
   Value1 is Value+1,
-  check_down(X-Y1,Board,Value1,Player),
+  check_down(X-Y1,Board,Value1,Player,NewValue),
   NewValue = Value1.
 
 check_right(X-Y,Board,Value,Player,NewValue):-
@@ -195,8 +177,21 @@ check_leftdiagonal(X-Y,Board,Value,Player,NewValue):-
   check_leftdiagonal(X1-Y1,Board,Value1,Player),
   NewValue = Value1.
 
-%%% Verifica se algum dos jogadores retorna a cor do jogador que venceu, VER TEST EXEMPLO 4
+  /*
+  * This predicate Returns the player who won the game.
+  *Params
+  *@Board - We need to give the board.
+  *@Winner - The winner is returned as 'b' or 'w'
+  *Notes: This predicate is not well implemented
+  */
 
+/*
+* This verifies one verifies if someone won in any horizontal Line
+* This predicate uses the check_horizontal_win to see if after there
+* is two pieces connected in a row. If there is the check_horizontal_win
+* will see the rest of the row in order to found the ammount necessary
+* of connected pieces for a win.
+*/
 game_over(Board,Winner):-
   take_piece(X-Y,Board,Color-_),
   X1 is X+1,
@@ -204,6 +199,13 @@ game_over(Board,Winner):-
   Color = ColorHorizontal,
   check_horizontal_win(X1-Y,Board,ColorHorizontal-_,Winner).
 
+  /*
+  * This verifies one verifies if someone won in any diagonal Line (y=-x)
+  * This predicate uses the check_diagonal_win to see if after there
+  * is two pieces connected in a row. If there is the check_diagonal_win
+  * will see the rest of the row in order to found the ammount necessary
+  * of connected pieces for a win.
+  */
 game_over(Board,Winner):-
   take_piece(X-Y,Board,Color-_),
   X1 is X+1,
@@ -212,6 +214,13 @@ game_over(Board,Winner):-
   Color = ColorHorizontal,
   check_diagonal_win(X1-Y1,Board,ColorHorizontal-_,Winner).
 
+  /*
+  * This verifies one verifies if someone won in any diagonal Line(y=x)
+  * This predicate uses the check_diagonal_win to see if after there
+  * is two pieces connected in a row. If there is the check_diagonal_win
+  * will see the rest of the row in order to found the ammount necessary
+  * of connected pieces for a win.
+  */
 game_over(Board,Winner):-
   take_piece(X-Y,Board,Color-_),
   X1 is X-1,
@@ -220,6 +229,14 @@ game_over(Board,Winner):-
   Color = ColorHorizontal,
   check_otherdiagonal_win(X1-Y1,Board,ColorHorizontal-_,Winner).
 
+
+  /*
+  * This verifies one verifies if someone won in any vertical
+  * This predicate uses the check_vertical_win to see if after there
+  * is two pieces connected in a row. If there is the check_vertical_win
+  * will see the rest of the collumn in order to found the ammount necessary
+  * of connected pieces for a win.
+  */
 game_over(Board,Winner):-
   take_piece(X-Y,Board,Color-_),
   Y1 is Y+1,
@@ -227,6 +244,11 @@ game_over(Board,Winner):-
   Color = ColorHorizontal,
   check_vertical_win(X-Y1,Board,ColorHorizontal-_,Winner).
 
+
+/*
+* The next 4 following preditaces are used to assist the game_over predicate
+* to check if there is more two pieces adjacent in a row
+*/
 check_vertical_win(X-Y,Board,Color-_,ColorWon):-
   Y1 is Y+1,
   take_piece(X-Y1,Board,ColorCheck-_),
@@ -234,7 +256,6 @@ check_vertical_win(X-Y,Board,Color-_,ColorWon):-
   Y2 is Y+1,
   take_piece(X-Y2,Board,ColorCheck2-_),
   Color = ColorCheck2,
-  write('Vertical'),
   ColorWon is Color.
 
 check_diagonal_win(X-Y,Board,Color-_,ColorWon):-
@@ -246,7 +267,6 @@ check_diagonal_win(X-Y,Board,Color-_,ColorWon):-
   Y2 is Y1+1,
   take_piece(X2-Y2,Board,ColorCheck2-_),
   Color = ColorCheck2,
-  write('Diagonal'),
   ColorWon is Color.
 
 check_otherdiagonal_win(X-Y,Board,Color-_,ColorWon):-
@@ -258,7 +278,6 @@ check_otherdiagonal_win(X-Y,Board,Color-_,ColorWon):-
   Y2 is Y1+1,
   take_piece(X2-Y2,Board,ColorCheck2-_),
   Color = ColorCheck2,
-  write('Other Diagonal'),
   ColorWon = Color.
 
 check_horizontal_win(X-Y,Board,Color-_,ColorWon):-
@@ -268,7 +287,6 @@ check_horizontal_win(X-Y,Board,Color-_,ColorWon):-
   X2 is X1+1,
   take_piece(X2-Y,Board,ColorCheck2-_),
   Color = ColorCheck2,
-  write('Horizontal'),
   ColorWon = Color.
 
 
@@ -288,60 +306,72 @@ move(Move,Board,NewBoard):-
   nth0(3,Move,Number),
   move_piece(Source,Destiny,Number,Board,NewBoard).
 
-%%% retorna lista de valid_moves, VER  TEST EXEMPLO 2
+/*
+* Checks all the valid moves in a board for the given player.
+*/
 valid_moves(Board,Player,ListOfMoves):-
   findall(X,take_piece(X,Board,Player-_),Results),
   check_forall(Results,Board,ListOfMoves,[]).
 
+/*
+* This predicate is used get all the possible moves for
+* the positiona of every piece.
+*/
 check_forall([], _, Acc, Acc).
 check_forall([H|T], Board, ListOfMoves, Acc):-
     	findall(X,(moves(H,X,Board), X \=e), Results),
     	append(Results, Acc, Acc1),
     	check_forall(T, Board, ListOfMoves, Acc1).
 
-  moves(X1-Y1,X2-Y2,Board):-
+
+/*
+* The moves predicate is used to get all the possible moves for one position,
+* each predicate also checks if the move is legal by checking if there is an
+* adjacent piece in the destiny position of the board.
+*/
+moves(X1-Y1,X2-Y2,Board):-
     X2 is X1+2,
     Y2 is Y1-1,
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
-  moves(X1-Y1,X2-Y2,Board):-
+moves(X1-Y1,X2-Y2,Board):-
     X2 is X1+2,
     Y2 is Y1+1,
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
-  moves(X1-Y1,X2-Y2,Board):-
+moves(X1-Y1,X2-Y2,Board):-
     X2 is X1-1,
     Y2 is Y1-2,
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
-  moves(X1-Y1,X2-Y2,Board):-
+moves(X1-Y1,X2-Y2,Board):-
     X2 is X1-2,
     Y2 is Y1-1,
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
-  moves(X1-Y1,X2-Y2,Board):-
+moves(X1-Y1,X2-Y2,Board):-
     X2 is X1-2,
     Y2 is Y1+1,
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
-  moves(X1-Y1,X2-Y2,Board):-
+moves(X1-Y1,X2-Y2,Board):-
     X2 is X1-1,
     Y2 is Y1+2,
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
-  moves(X1-Y1,X2-Y2,Board):-
+moves(X1-Y1,X2-Y2,Board):-
     X2 is X1+1,
     Y2 is Y1+2,
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
-  moves(X1-Y1,X2-Y2,Board):-
+moves(X1-Y1,X2-Y2,Board):-
     X2 is X1+1,
     Y2 is Y1-2,
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
@@ -349,10 +379,10 @@ check_forall([H|T], Board, ListOfMoves, Acc):-
 
 askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 	% Output the current player %
-	write('======= '), 
+	write('======= '),
 	( (Player = b, write('Black')) ; (Player = w, write('White')) ),
 	write(' Player ======='), nl,
-	% ask the source tile stack coordinates % 
+	% ask the source tile stack coordinates %
 	write('[From] Row ? '), getInt(RowSrc), getInt(_),
 	write('[From] Column ? '), getInt(ColSrc), getInt(_),
 	% ask how many tiles to be moved %
@@ -364,8 +394,8 @@ askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 startPlayerVPlayer:-
 	% initialize the board %
 	initialBoard(Board),
-	display_game(Board, w),
-	gamePlayerVPlayer(Board).	
+	display_withcoords(Board,w),
+	gamePlayerVPlayer(Board).
 
 gamePlayerVPlayer(Board):-
 	gameWhitePlayer(Board, NewBoard),
@@ -376,10 +406,10 @@ gameWhitePlayer(Board, NewBoard):-
 	% ask the input for white tiles player %
 	askPlayerInput(w, RowSrc_White-ColSrc_White, NumWhite, RowDst_White-ColDst_White),
 	move([w, ColSrc_White-RowSrc_White, ColDst_White-RowDst_White, NumWhite], Board, NewBoard),
-	display_game(NewBoard, w).
+	display_withcoords(NewBoard, w).
 
 gameBlackPlayer(Board, NewBoard):-
 	% ask the input for white tiles player %
 	askPlayerInput(b, RowSrc_Black-ColSrc_Black, NumBlack, RowDst_Black-ColDst_Black),
 	move([b, ColSrc_Black-RowSrc_Black, ColDst_Black-RowDst_Black, NumBlack], Board, NewBoard),
-	display_game(NewBoard, b).
+	display_withcoords(NewBoard, b).

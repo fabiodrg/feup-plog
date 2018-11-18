@@ -3,29 +3,6 @@
 
 %%%%% matrix utilities
 
-
-%%%% last three functions not fully working
-
-%%%%% função nth0 pode fazer isto mais facilmente
-append_last_collumn([],Element,FinalBoard,FinalBoard).
-append_last_collumn([H|T],Element,NewBoard,FinalBoard):-
-  append([H],[e],NewBoard),
-  append_last_collumn(T,Element,NewBoard),
-  FinalBoard = NewBoard.
-
-append_last_row(Board,Element,FinalBoard).
-  get_width(Board,BoardWith),
-  create_new_row(BoardWith,[],[],FinalRow),
-  append(Board,NewRow,FinalBoard).
-
-create_new_row(BoardWith,NewRow,NewRow).
-create_new_row(BoardWith,Row,NewRow),
-  BoardWith \= 0,
-  BoardWith1 is BoardWith-1,
-  append(Row,[e],NewRow),
-  create_new_row(BoardWith,Row,NewRow).
-%%%%%%%%%%% until here
-
 %%% insert coords
 
 insert_Coords(Board,NewBoard):-
@@ -36,26 +13,6 @@ insert_Coords(Board,NewBoard):-
     create_hindex_list([],HorizontalLength,0,FinalList),
     nth0(0,NewBoard,FinalList,FinalBoard).
 
-
-test_insertBoard:-
-  insert_Coords([
-          [e,e,e,e],
-          [e,b-20,w-20,e],
-          [e,e,e,e]
-      ],X1),
-  write(X1).
-
-test_insert:-
-  create_hindex_list([],5,0,FinalList),
-  write(FinalList).
-
-test_insertVertical:-
-  insert_vertical([
-          [e,e,e,e],
-          [e,b-20,w-20,e],
-          [e,e,e,e]
-      ],3,0,FinalBoard),
-      write(FinalBoard).
 
 
 insert_vertical(FinalBoard,Size,Size,FinalBoard).
@@ -102,25 +59,28 @@ take_piece(X1-Y1,Board,Piece):-
 createPiece(X-Y,NewPiece):-
     NewPiece = X-Y.
 
-%% substitui um itme numa lista
+/*
+* Replaces an element in the a certain position of list
+*/
 replace_item([_|T],0,Element,[Element|T]).
 replace_item([H|T],Index,Element,[H|R]):-
   Index > -1,
   NewIndex is Index-1,
   replace_item(T,NewIndex,Element,R).
 
-%%% substitui uma lista numa matrix e retorna o novo board com a nova peça (Element) na posição x-y
+/*
+* Replaces an element in the a certain position of the board
+*/
 replace_in_matrix(X1-Y1,Board,Element,NewBoard):-
   get_elem(Board,Y1,ElemList),
   replace_item(ElemList,X1,Element,NewList),
   replace_item(Board,Y1,NewList,NewBoard).
 
-test_move:-
-  midBoard(X),
-  move_piece(3-1,1-2,2,X,Y),
-  write(Y).
 
-%%%move um determinado Number peça da pos x1-y1 para x2-y2  e retorna no final board
+  /*
+  * Moves a piece to an empty cell in the board,
+  * and returns the result of it as another board.
+  */
 move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
   take_piece(X1-Y1,Board,PiecePlayer-PieceNumber),
   NewPieceNumber is PieceNumber-Number,
@@ -129,6 +89,10 @@ move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
   Piece = e,
   replace_in_matrix(X2-Y2,NewBoard,PiecePlayer-Number,FinalBoard).
 
+/*
+* Moves a piece to a non-empty cell in the board,
+* and returns the result of it as another board.
+*/
 move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
   take_piece(X1-Y1,Board,PiecePlayer-PieceNumber),
   NewPieceNumber is PieceNumber-Number,
@@ -139,25 +103,30 @@ move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
   FinalNumber is Y + Number,
   replace_in_matrix(X2-Y2,NewBoard,PiecePlayer-FinalNumber,FinalBoard).
 
-%%% retorna width e height de uma matrix
+/*
+* Returns the Width or/and the Height of a matrix
+*/
 get_list_size(List,Width,Height):-
   proper_length(List,Height),
   last(List,Last),
   proper_length(Last,Width).
 
-
-%%% retorna a width de uma matrix
+/*
+* Returns the Width of a matrix
+*/
 get_width(List,Width):-
   get_list_size(List,Width,_).
 
-%%% retorna a height de uma matrix
+/*
+* Returns the Height of a matrix
+*/
 get_height(List,Height):-
   get_list_size(List,_,Height).
 
-%%%valid_moves(Board,Player,ListOfMoves):-
 
-%%%% verify is a certain piece as another as adjacent
-
+/*
+*verifies which piece is in adjacent positions to the coordinates given
+*/
 verify_left(X-Y,Board,Piece):-
   X1 is X-1,
   take_piece(X1-Y,Board,Piece).
@@ -194,56 +163,75 @@ verify_topright(X-Y,Board,Piece):-
   X1 is X+1,
   take_piece(X1-Y1,Board,Piece).
 
-%%% verifica qual é a peça adjacent à one
+/*
+* Checks if there is an adjacent piece to the PieceOne on the left.
+*/
 check_adjacent(Board,PieceOne,PieceTwo):-
   take_piece(X-Y,Board,PieceOne),
   verify_left(X-Y,Board,Piece),
-  Piece = PieceTwo,
-  write('Left').
+  Piece = PieceTwo.
 
+
+/*
+* Checks if there is an adjacent piece to the PieceOne on the right.
+*/
 check_adjacent(Board,PieceOne,PieceTwo):-
   take_piece(X-Y,Board,PieceOne),
   verify_right(X-Y,Board,Piece),
-  Piece = PieceTwo,
-  write('Right').
+  Piece = PieceTwo.
 
+/*
+* Checks if there is an adjacent piece to the PieceOne above it.
+*/
 check_adjacent(Board,PieceOne,PieceTwo):-
   take_piece(X-Y,Board,PieceOne),
   verify_up(X-Y,Board,Piece),
-  Piece = PieceTwo,
-  write('UP').
+  Piece = PieceTwo.
 
+/*
+* Checks if there is an adjacent piece to the PieceOne below it.
+*/
 check_adjacent(Board,PieceOne,PieceTwo):-
   take_piece(X-Y,Board,PieceOne),
   verify_down(X-Y,Board,Piece),
-  Piece = PieceTwo,
-  write('DOWN').
+  Piece = PieceTwo.
 
+/*
+* Checks if there is an adjacent piece to the PieceOne on the right down corner.
+*/
 check_adjacent(Board,PieceOne,PieceTwo):-
   take_piece(X-Y,Board,PieceOne),
   verify_downright(X-Y,Board,Piece),
-  Piece = PieceTwo,
-  write('DOWN_RIGHT').
+  Piece = PieceTwo.
 
+/*
+* Checks if there is an adjacent piece to the PieceOne on the left down corner.
+*/
 check_adjacent(Board,PieceOne,PieceTwo):-
   take_piece(X-Y,Board,PieceOne),
   verify_downleft(X-Y,Board,Piece),
-  Piece = PieceTwo,
-  write('DOWN_LEFT').
+  Piece = PieceTwo.
 
+/*
+* Checks if there is an adjacent piece to the PieceOne on the left top corner.
+*/
 check_adjacent(Board,PieceOne,PieceTwo):-
   take_piece(X-Y,Board,PieceOne),
   verify_topleft(X-Y,Board,Piece),
-  Piece = PieceTwo,
-  write('TOP_LEFT').
+  Piece = PieceTwo.
 
+/*
+* Checks if there is an adjacent piece to the PieceOne on the right top corner.
+*/
 check_adjacent(Board,PieceOne,PieceTwo):-
   take_piece(X-Y,Board,PieceOne),
   verify_topright(X-Y,Board,Piece),
-  Piece = PieceTwo,
-  write('TOP_RIGHT').
+  Piece = PieceTwo.
 
-%%%% verificar por coordenadas
+/*
+* The next 6 predicates do the same as the the 6 before this ones but
+* they check if there is an adjacent piece to the coordinates given.
+*/
 
 check_adjacent_coords(Board,X-Y,Piece):-
   verify_right(X-Y,Board,Piece).
@@ -277,6 +265,10 @@ clear_console(X):-
   nl,
   X1 is X-1,
   clear_console(X1).
+
+enter_toContinue:-
+  write('Press Enter.'),nl,
+  continue,!.
 
 continue:-
   get_char(_).
