@@ -310,7 +310,7 @@ move(Move,Board,NewBoard):-
 * Checks all the valid moves in a board for the given player.
 */
 valid_moves(Board,Player,ListOfMoves):-
-  findall(X,take_piece(X,Board,Player-_),Results),
+  findall(X,(take_piece(X,Board,Player-Y), Y>1),Results),
   check_forall(Results,Board,NewMoves,[]),
   remove_results(Board,NewMoves,NewMoves,ListOfMoves).
 
@@ -503,6 +503,21 @@ gamePlayerVPlayer(Board):-
 	gameBlackPlayer(Board, NewBoard), clear_console,
 	gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
 	gamePlayerVPlayer(NewNewBoard).
+
+% gamePlayerVPlayer(Board):-
+% 	gameBlackPlayer(Board, NewBoard), clear_console,
+% 	game_over(NewBoard, _) -> (
+% 		write('Black player won! GAME OVER'),
+% 		Board = NewBoard
+% 	) ; (
+% 		gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
+% 		game_over(NewNewBoard, _) -> (
+% 			write('White player won! GAME OVER'),
+% 			Board = NewBoard
+% 		) ; (
+% 			gamePlayerVPlayer(NewNewBoard)
+% 		)
+% 	).
 
 gamePlayerVComputer(Board):-
   	gameBlackComputerEasy(Board,NewBoard),
