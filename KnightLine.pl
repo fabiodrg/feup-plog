@@ -364,33 +364,36 @@ askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 startPlayerVPlayer:-
 	% initialize the board %
 	initialBoard(Board),
-	display_game(Board),
 	gamePlayerVPlayer(Board).	
 
 gamePlayerVPlayer(Board):-
-	gameWhitePlayer(Board, NewBoard),
-	gameBlackPlayer(NewBoard, NewNewBoard),
+	gameWhitePlayer(Board, NewBoard), clear_console,
+	gameBlackPlayer(NewBoard, NewNewBoard), clear_console,
 	gamePlayerVPlayer(NewNewBoard).
 
 gameWhitePlayer(Board, NewBoard):-
+	% display current game state %
+	display_game(Board),
 	% ask the input for white tiles player %
 	askPlayerInput(w, RowSrc_White-ColSrc_White, NumWhite, RowDst_White-ColDst_White),
 	move([w, ColSrc_White-RowSrc_White, ColDst_White-RowDst_White, NumWhite], Board, Board1) -> (
-		stretchBoard(Board1, NewBoard),
-		display_game(NewBoard)
+		stretchBoard(Board1, NewBoard)
 	) ;  (
+		clear_console,
 		write('Error: Invalid move! Try again white player\n'),
 		gameWhitePlayer(Board, NewBoard)
 	).
 	
 
 gameBlackPlayer(Board, NewBoard):-
+	% display current game state %
+	display_game(Board),
 	% ask the input for white tiles player %
 	askPlayerInput(b, RowSrc_Black-ColSrc_Black, NumBlack, RowDst_Black-ColDst_Black),
 	move([b, ColSrc_Black-RowSrc_Black, ColDst_Black-RowDst_Black, NumBlack], Board, Board1) -> (
-		stretchBoard(Board1, NewBoard),
-		display_game(NewBoard)
+		stretchBoard(Board1, NewBoard)
 	) ; (
+		clear_console,
 		write('Error: Invalid move! Try again black player\n'),
 		gameBlackPlayer(Board, NewBoard)
 	).
