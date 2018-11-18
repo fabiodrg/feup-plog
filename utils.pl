@@ -14,8 +14,6 @@ createEmptyRow(BoardWidth,Row,NewRow):-
 	write(Aux),nl,
 	createEmptyRow(NewBoardWidth,Aux,NewRow).
 
-%stretchBoard(Board).
-
 appendEmptyRowTop(Board, NewBoard):-
 	get_width(Board,HorizontalLength),
 	createEmptyRow(HorizontalLength, EmptyRow),
@@ -26,18 +24,15 @@ appendEmptyRowBottom(Board, NewBoard):-
 	createEmptyRow(HorizontalLength, EmptyRow),
 	append(Board, [EmptyRow], NewBoard).
 
-appendEmptyRowLeft([], []).
-appendEmptyRowLeft([H|T], [Hnew|Tnew]):-
+appendEmptyColumnLeft([], []).
+appendEmptyColumnLeft([H|T], [Hnew|Tnew]):-
 	append([e], H, Hnew),
-	appendEmptyRowLeft(T, Tnew).
+	appendEmptyColumnLeft(T, Tnew).
 
-appendEmptyRowRight([], []).
-appendEmptyRowRight([H|T], [Hnew|Tnew]):-
+appendEmptyColumnRight([], []).
+appendEmptyColumnRight([H|T], [Hnew|Tnew]):-
 	append(H, [e], Hnew),
-	appendEmptyRowRight(T, Tnew).
-	
-%stretchBoardVertically(Board):-
-	%(/+ isRowEmpty(Board, 0) -> proper_length(Board,VerticalLength), insert_vertical(Board,VerticalLength,0,FinalBoard)).
+	appendEmptyColumnRight(T, Tnew).
 
 isRowEmpty([H|T], N):-
 	% find the row in the matrix %
