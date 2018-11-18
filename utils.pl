@@ -3,6 +3,78 @@
 
 %%%%% matrix utilities
 
+
+createEmptyRow(BoardWith,Row):-
+	createEmptyRow(BoardWith, [], Row).
+createEmptyRow(0,Row,Row).
+createEmptyRow(BoardWidth,Row,NewRow):-
+	BoardWidth \= 0,
+	NewBoardWidth is BoardWidth - 1,
+	append(Row,[e],Aux),
+	createEmptyRow(NewBoardWidth,Aux,NewRow).
+
+appendEmptyRowTop(Board, NewBoard):-
+	\+ isRowEmpty(Board,0) -> (
+		get_width(Board,HorizontalLength),
+		createEmptyRow(HorizontalLength, EmptyRow),
+		append([EmptyRow], Board, NewBoard)
+	) ; Board = NewBoard.
+
+appendEmptyRowBottom(Board, NewBoard):-
+	get_height(Board, Height), IndexLastRow is Height - 1,
+	\+ isRowEmpty(Board, IndexLastRow) -> (
+		get_width(Board,HorizontalLength),
+		createEmptyRow(HorizontalLength, EmptyRow),
+		append(Board, [EmptyRow], NewBoard)
+	) ; Board = NewBoard.
+
+appendEmptyColumnLeft_([], []).
+appendEmptyColumnLeft_([H|T], [Hnew|Tnew]):-
+	append([e], H, Hnew),
+	appendEmptyColumnLeft_(T, Tnew).
+appendEmptyColumnLeft(Board, NewBoard):-
+	\+ isColumnEmpty(Board, 0) -> (
+		appendEmptyColumnLeft_(Board,NewBoard)
+	) ; Board = NewBoard.
+
+appendEmptyColumnRight_([], []).
+appendEmptyColumnRight_([H|T], [Hnew|Tnew]):-
+	append(H, [e], Hnew),
+	appendEmptyColumnRight_(T, Tnew).
+
+appendEmptyColumnRight(Board,NewBoard):-
+	get_width(Board, Width), IndexLastCol is Width - 1,
+	\+ isColumnEmpty(Board, IndexLastCol) -> (
+		appendEmptyColumnRight_(Board,NewBoard)
+	) ; Board = NewBoard.
+
+isRowEmpty([H|T], N):-
+	% find the row in the matrix %
+	nth0(N, [H|T], Row),
+	% check if all vals are 'e' %
+	isRowEmpty(Row).
+
+isRowEmpty([]).
+
+isRowEmpty([H|T]):-
+	H = e,
+	isRowEmpty(T).
+
+isColumnEmpty([], _).
+isColumnEmpty([H|T], N):-
+	% H is a list, the first matrix row %
+	nth0(N, H, Tile),
+	Tile = e,
+	isColumnEmpty(T, N).
+
+stretchBoard(Board, NewBoard):-
+	appendEmptyRowTop(Board, Board1),
+	appendEmptyRowBottom(Board1, Board2),
+	appendEmptyColumnLeft(Board2, Board3),
+	appendEmptyColumnRight(Board3, NewBoard).
+
+%%%%%%%%%%% until here
+
 %%% insert coords
 
 insert_Coords(Board,NewBoard):-
@@ -277,6 +349,32 @@ getChar(Input):-
   get_char(Input),
 	get_char(_).
 
+
 getInt(Input):-
 	get_code(TempInput),
-	Input is TempInput - 48.
+	% compute the decimal digit by subtracting 48, the ASCII code for number 0 %
+	Input is TempInput - 48,
+	% check the range. If Input isn't in [0,9], than the input was any other char %
+	Input >= 0, Input =< 9.
+
+getNumber(Number):-
+	getInt(Input) -> (
+		getNumber(RemainderNumber) -> (
+			getNumberLen(RemainderNumber, L),
+			Aux = integer(Input*exp(10,L)),
+			Number is Aux + RemainderNumber
+		) ; (
+			Number = Input	
+		)
+	).
+
+getNumberLen(Number, Size):-
+	getNumberLen_(Number, 0, Size).
+getNumberLen_(Number, CurrentSize, Size):-
+	Number < 10, Number >= 0,
+	Size is CurrentSize + 1.
+getNumberLen_(Number, CurrentSize, Size):-
+	Number > 9,
+	Aux is Number / 10,
+	NewSize is CurrentSize + 1,
+	getNumberLen_(Aux, NewSize, Size).
