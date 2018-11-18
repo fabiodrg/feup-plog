@@ -36,3 +36,15 @@ test_isColumnEmpty:-
 	write('Passed teste 3\n'),
 	\+ isColumnEmpty(X, 3),
 	write('Passed teste 4\n').
+
+
+% (not realistic for the game) %
+test_stretchBoard_board1([[e, 1-b, e],[3-w, e, e],[e, e, 4-w],[e, 2-b, e]]).
+% add only a top row %
+test_stretchBoard_board2([[e,1-w,e], [e,e,e]]).
+% add a top row and left col %
+test_stretchBoard_board3([[1-w,e,e], [e,e,e]]).
+% add a top row and right col %
+test_stretchBoard_board4([[e,e,1-w], [e,e,e]]).
+% add only a left col %
+test_stretchBoard_board5([[e,e,e], [1-w,e,e], [e,e,e]]).

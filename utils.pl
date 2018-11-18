@@ -71,7 +71,11 @@ isColumnEmpty([H|T], N):-
 %(\+ isRowEmpty(Board,0), \+ isColumnEmpty(Board, 0)) -> (appendEmptyRowTop(Board, Board1), appendEmptyColumnLeft(Board1, NewBoard));
 % if the top right corner is not empty, add an empty row at board's top and empty column on right %
 %(\+ isRowEmpty(Board,0), \+ isColumnEmpty(Board, 0)) -> (appendEmptyRowTop(Board, Board1), appendEmptyColumnLeft(Board1, NewBoard));
-%stretchBoard(Board, NewBoard).
+stretchBoard(Board, NewBoard):-
+	appendEmptyRowTop(Board, Board1),
+	appendEmptyRowBottom(Board1, Board2),
+	appendEmptyColumnLeft(Board2, Board3),
+	appendEmptyColumnRight(Board3, NewBoard).
 
 %%%%%%%%%%% until here
 
