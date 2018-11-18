@@ -30,6 +30,11 @@ appendEmptyRowLeft([], []).
 appendEmptyRowLeft([H|T], [Hnew|Tnew]):-
 	append([e], H, Hnew),
 	appendEmptyRowLeft(T, Tnew).
+
+appendEmptyRowRight([], []).
+appendEmptyRowRight([H|T], [Hnew|Tnew]):-
+	append(H, [e], Hnew),
+	appendEmptyRowRight(T, Tnew).
 	
 %stretchBoardVertically(Board):-
 	%(/+ isRowEmpty(Board, 0) -> proper_length(Board,VerticalLength), insert_vertical(Board,VerticalLength,0,FinalBoard)).
