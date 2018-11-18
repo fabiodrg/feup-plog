@@ -347,6 +347,10 @@ check_forall([H|T], Board, ListOfMoves, Acc):-
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%% PLAYER INPUT %%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Handles the first interaction with the white tiles player
 % Because the source tile location is known and the player can only move a single tile, the predicate only asks for the destination
 % @param RowDst-ColDst RowDst is the destination row, starting in 0, and ColDst the destination column, starting in 0
@@ -432,6 +436,9 @@ gameBlackPlayer(Board, NewBoard):-
 		gameBlackPlayer(Board, NewBoard)
 	).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% GAMES MODE %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Handles the game rounds... 
 % TODO still doesn't check if some player won
 gamePlayerVPlayer(Board):-
