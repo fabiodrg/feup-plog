@@ -47,26 +47,26 @@ finalBoard([
 
 %% print board %%
 
-print_initial_board(Y):-
+print_initial_board:-
     initialBoard(X),
-    display_game(X,Y).
+    display_game(X).
 
-print_final_board(Y):-
+print_final_board:-
     finalBoard(X),
-    display_game(X,Y).
+    display_game(X).
 
-print_mid_board(Y):-
+print_mid_board:-
     midBoard(X),
-    display_game(X,Y).
+    display_game(X).
 
-display_game([],P):-
+display_game([]):-
     nl.
 
 
-display_game([H|T],P):-
+display_game([H|T]):-
     print_line(H),
     nl,
-    display_game(T,P).
+    display_game(T).
 
 
 print_line([]).
@@ -117,7 +117,7 @@ test3:-
   move([b,1-1,3-0,5],Board,NewBoard),
   write(NewBoard),
   nl,
-  display_game(NewBoard,b).
+  display_game(NewBoard).
 
 
 testBoard([
@@ -364,7 +364,7 @@ askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 startPlayerVPlayer:-
 	% initialize the board %
 	initialBoard(Board),
-	display_game(Board, w),
+	display_game(Board),
 	gamePlayerVPlayer(Board).	
 
 gamePlayerVPlayer(Board):-
@@ -375,11 +375,13 @@ gamePlayerVPlayer(Board):-
 gameWhitePlayer(Board, NewBoard):-
 	% ask the input for white tiles player %
 	askPlayerInput(w, RowSrc_White-ColSrc_White, NumWhite, RowDst_White-ColDst_White),
-	move([w, ColSrc_White-RowSrc_White, ColDst_White-RowDst_White, NumWhite], Board, NewBoard),
-	display_game(NewBoard, w).
+	move([w, ColSrc_White-RowSrc_White, ColDst_White-RowDst_White, NumWhite], Board, Board1),
+	stretchBoard(Board1, NewBoard),
+	display_game(NewBoard).
 
 gameBlackPlayer(Board, NewBoard):-
 	% ask the input for white tiles player %
 	askPlayerInput(b, RowSrc_Black-ColSrc_Black, NumBlack, RowDst_Black-ColDst_Black),
-	move([b, ColSrc_Black-RowSrc_Black, ColDst_Black-RowDst_Black, NumBlack], Board, NewBoard),
-	display_game(NewBoard, b).
+	move([b, ColSrc_Black-RowSrc_Black, ColDst_Black-RowDst_Black, NumBlack], Board, Board1),
+	stretchBoard(Board1, NewBoard),
+	display_game(NewBoard).

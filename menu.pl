@@ -94,4 +94,4 @@ make_move(Board,Player):-
   read(Number),
   create_move(b,X1-Y1,X2-Y2,Number,Move),
   move(Move,Board,NewBoard),
-  display_game(NewBoard,b).
+  display_game(NewBoard).
