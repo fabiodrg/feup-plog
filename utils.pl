@@ -4,20 +4,6 @@
 %%%%% matrix utilities
 
 
-%%%% last three functions not fully working
-
-%%%%% função nth0 pode fazer isto mais facilmente
-append_last_collumn([],Element,FinalBoard,FinalBoard).
-append_last_collumn([H|T],Element,NewBoard,FinalBoard):-
-  append([H],[e],NewBoard),
-  append_last_collumn(T,Element,NewBoard),
-  FinalBoard = NewBoard.
-
-append_last_row(Board,Element,FinalBoard).
-  get_width(Board,BoardWith),
-  create_new_row(BoardWith,[],[],FinalRow),
-  append(Board,NewRow,FinalBoard).
-
 createEmptyRow(BoardWith,Row):-
 	createEmptyRow(BoardWith, [], Row).
 createEmptyRow(0,Row,Row).
@@ -39,6 +25,11 @@ appendEmptyRowBottom(Board, NewBoard):-
 	get_width(Board,HorizontalLength),
 	createEmptyRow(HorizontalLength, EmptyRow),
 	append(Board, [EmptyRow], NewBoard).
+
+appendEmptyRowLeft([], []).
+appendEmptyRowLeft([H|T], [Hnew|Tnew]):-
+	append([e], H, Hnew),
+	appendEmptyRowLeft(T, Tnew).
 	
 %stretchBoardVertically(Board):-
 	%(/+ isRowEmpty(Board, 0) -> proper_length(Board,VerticalLength), insert_vertical(Board,VerticalLength,0,FinalBoard)).
