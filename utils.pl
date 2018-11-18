@@ -334,10 +334,31 @@ getChar(Input):-
   get_char(Input),
 	get_char(_).
 
+
 getInt(Input):-
 	get_code(TempInput),
 	% compute the decimal digit by subtracting 48, the ASCII code for number 0 %
 	Input is TempInput - 48,
 	% check the range. If Input isn't in [0,9], than the input was any other char %
-	Input >= 0,
-	Input =< 9.
+	Input >= 0, Input =< 9.
+
+getNumber(Number):-
+	getInt(Input) -> (
+		getNumber(RemainderNumber) -> (
+			getNumberLen(RemainderNumber, L),
+			Number is Input*exp(10,L) + RemainderNumber
+		) ; (
+			Number = Input	
+		)
+	).
+
+getNumberLen(Number, Size):-
+	getNumberLen_(Number, 0, Size).
+getNumberLen_(Number, CurrentSize, Size):-
+	Number < 10, Number >= 0,
+	Size is CurrentSize + 1.
+getNumberLen_(Number, CurrentSize, Size):-
+	Number > 9,
+	Aux is Number / 10,
+	NewSize is CurrentSize + 1,
+	getNumberLen_(Aux, NewSize, Size).
