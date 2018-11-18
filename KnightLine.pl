@@ -182,7 +182,6 @@ check_leftdiagonal(X-Y,Board,Value,Player,NewValue):-
   *Params
   *@Board - We need to give the board.
   *@Winner - The winner is returned as 'b' or 'w'
-  *Notes: This predicate is not well implemented
   */
 
 /*
@@ -499,25 +498,17 @@ gameBlackComputerEasy(Board,NewBoard):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Handles the game rounds... 
 % TODO still doesn't check if some player won
-gamePlayerVPlayer(Board):-
-	gameBlackPlayer(Board, NewBoard), clear_console,
-	gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
-	gamePlayerVPlayer(NewNewBoard).
-
 % gamePlayerVPlayer(Board):-
 % 	gameBlackPlayer(Board, NewBoard), clear_console,
-% 	game_over(NewBoard, _) -> (
-% 		write('Black player won! GAME OVER'),
-% 		Board = NewBoard
-% 	) ; (
-% 		gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
-% 		game_over(NewNewBoard, _) -> (
-% 			write('White player won! GAME OVER'),
-% 			Board = NewBoard
-% 		) ; (
-% 			gamePlayerVPlayer(NewNewBoard)
-% 		)
-% 	).
+% 	gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
+% 	gamePlayerVPlayer(NewNewBoard).
+
+gamePlayerVPlayer(Board):-
+	gameBlackPlayer(Board, NewBoard), clear_console,
+	\+ game_over(NewBoard, _),
+	gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
+	\+ game_over(NewNewBoard, _),
+	gamePlayerVPlayer(NewNewBoard).
 
 gamePlayerVComputer(Board):-
   	gameBlackComputerEasy(Board,NewBoard),
@@ -532,7 +523,7 @@ startPlayerVPlayer:-
 	% initialize the board %
 	initialBoard(Board),
 	gameWhitePlayerFirstRound(Board, NewBoard), clear_console,
-	gamePlayerVPlayer(NewBoard).
+	\+ gamePlayerVPlayer(NewBoard) -> write(NewBoard).
 
 startPlayerVComputer:-
     clear_console,

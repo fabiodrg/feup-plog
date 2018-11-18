@@ -57,7 +57,7 @@ test_gameOver1([
 
 test_gameOver2([
 	[e,e,w-5,e,b-3], % move one of this 3-b
-	[e,e,e,b-1,b-1], % to the second empty
+	[e,b-1,e,b-1,b-1], % to the second empty
 	[e,e,w-1,w-1,w-1]
 	]).
 
@@ -66,3 +66,6 @@ test_gameOver3([
 	[e,b-2,b-3,b-1,b-1], % to the second empty
 	[e,e,w-1,w-1,w-1]
 	]).
+
+test_gamePlayerVPlayer(X):-
+	\+ gamePlayerVPlayer(X) -> write(X).
