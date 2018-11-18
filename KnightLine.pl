@@ -378,6 +378,9 @@ askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 	write('[To] Row ? '), getNumber(RowDst),
 	write('[To] Column ? '), getNumber(ColDst).
 
+% Handles the first white player round, which is a special case
+% @param Board - The inital game board
+% @param NewBoard - The resultant board
 gameWhitePlayerFirstRound(Board, NewBoard):-
 	% display current game state %
 	display_game(Board),
@@ -391,6 +394,12 @@ gameWhitePlayerFirstRound(Board, NewBoard):-
 		gameWhitePlayerFirstRound(Board, NewBoard)
 	).
 
+% Handles the white player moves. 
+% It displays the current game board, asks the required input, attemps to move the tiles.
+% If the input is invalid it asks again. 
+% If not it also stretches the game board
+% @param Board - The current game board
+% @param NewBoard - The resultant board after the move
 gameWhitePlayer(Board, NewBoard):-
 	% display current game state %
 	display_game(Board),
@@ -404,6 +413,12 @@ gameWhitePlayer(Board, NewBoard):-
 		gameWhitePlayer(Board, NewBoard)
 	).
 
+% Handles the black player moves. 
+% It displays the current game board, asks the required input, attemps to move the tiles.
+% If the input is invalid it asks again. 
+% If not it also stretches the game board
+% @param Board - The current game board
+% @param NewBoard - The resultant board after the move
 gameBlackPlayer(Board, NewBoard):-
 	% display current game state %
 	display_game(Board),
@@ -417,11 +432,14 @@ gameBlackPlayer(Board, NewBoard):-
 		gameBlackPlayer(Board, NewBoard)
 	).
 
+% Handles the game rounds... 
+% TODO still doesn't check if some player won
 gamePlayerVPlayer(Board):-
 	gameBlackPlayer(Board, NewBoard), clear_console,
 	gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
 	gamePlayerVPlayer(NewNewBoard).
 
+% Initializes a Player VS Player game
 startPlayerVPlayer:-
 	% initialize the board %
 	initialBoard(Board),
