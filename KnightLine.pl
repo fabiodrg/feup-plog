@@ -46,15 +46,11 @@ finalBoard([
 
 %% print board %%
 
-test_insertBoard2:-
-  midBoard(Board),
-  display_withcoords(Board).
-
 display_withcoords(Board):-
   insert_Coords(Board,X1),
   display_game(X1).
 
-print_initial_board(Y):-
+print_initial_board:-
     initialBoard(X),
     insert_Coords(X,Z),
     display_game(Z).
@@ -126,7 +122,7 @@ value(Board,Player,Value):-
   write(Results),
   check_all_pieces(Results,Board,Player,Value).
 
-check_all_pieces([],Board,Value,Player).
+check_all_pieces([], _, _, _).
 check_all_pieces([H|T], Board,Value,Player):-
   check_down(H,Board,0,Player,NewValue1),
   write(NewValue1),
@@ -317,7 +313,7 @@ valid_moves(Board,Player,ListOfMoves):-
 /*
 *Remove the positions in the board already occupied by another piece.
 */
-remove_results(Board,[],List,List).
+remove_results(_,[],_,_).
 remove_results(Board,[H|T],ResultList,List):-
   take_piece(H,Board,Piece),
   Piece \= e ->
