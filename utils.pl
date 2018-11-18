@@ -18,12 +18,26 @@ append_last_row(Board,Element,FinalBoard).
   create_new_row(BoardWith,[],[],FinalRow),
   append(Board,NewRow,FinalBoard).
 
-create_new_row(BoardWith,NewRow,NewRow).
-create_new_row(BoardWith,Row,NewRow),
-  BoardWith \= 0,
-  BoardWith1 is BoardWith-1,
-  append(Row,[e],NewRow),
-  create_new_row(BoardWith,Row,NewRow).
+createEmptyRow(BoardWith,Row):-
+	createEmptyRow(BoardWith, [], Row).
+createEmptyRow(0,Row,Row).
+createEmptyRow(BoardWidth,Row,NewRow):-
+	BoardWidth \= 0,
+	NewBoardWidth is BoardWidth - 1,
+	append(Row,[e],Aux),
+	write(Aux),nl,
+	createEmptyRow(NewBoardWidth,Aux,NewRow).
+
+%stretchBoard(Board).
+
+appendEmptyRowTop(Board, NewBoard):-
+	get_width(Board,HorizontalLength),
+	createEmptyRow(HorizontalLength, EmptyRow),
+	append([EmptyRow], Board, NewBoard).
+
+	
+%stretchBoardVertically(Board):-
+	%(/+ isRowEmpty(Board, 0) -> proper_length(Board,VerticalLength), insert_vertical(Board,VerticalLength,0,FinalBoard)).
 
 isRowEmpty([H|T], N):-
 	% find the row in the matrix %
