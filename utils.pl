@@ -35,6 +35,10 @@ appendEmptyRowTop(Board, NewBoard):-
 	createEmptyRow(HorizontalLength, EmptyRow),
 	append([EmptyRow], Board, NewBoard).
 
+appendEmptyRowBottom(Board, NewBoard):-
+	get_width(Board,HorizontalLength),
+	createEmptyRow(HorizontalLength, EmptyRow),
+	append(Board, [EmptyRow], NewBoard).
 	
 %stretchBoardVertically(Board):-
 	%(/+ isRowEmpty(Board, 0) -> proper_length(Board,VerticalLength), insert_vertical(Board,VerticalLength,0,FinalBoard)).
