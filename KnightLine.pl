@@ -347,6 +347,23 @@ check_forall([H|T], Board, ListOfMoves, Acc):-
     findall(X,(check_adjacent_coords(Board,X2-Y2,X), X \=e), Results),
     Results \= [].
 
+% Handles the first interaction with the white tiles player
+% Because the source tile location is known and the player can only move a single tile, the predicate only asks for the destination
+% @param RowDst-ColDst RowDst is the destination row, starting in 0, and ColDst the destination column, starting in 0
+askWhitePlayerFirstInput(RowDst-ColDst):-
+	write('======= White Player =======\n'),
+	% ask the destination coordinates %
+	write('[To] Row ? '), getNumber(RowDst),
+	write('[To] Column ? '), getNumber(ColDst).
+
+% Handles user input for each game round. For the first round there are more specific predicates because it is a particular round
+% @see askWhitePlayerFirstInput
+% @see askBlackPlayerFirstInput
+% 
+% @param Player The player, either 'b'(lack) or 'w'(hite)
+% @param RowSrc-ColSrc is the source row, starting in 0, and ColDColSrc the source column, starting in 0
+% @param Num The number of tiles to be moved
+% @param RowDst-ColDst RowDst is the destination row, starting in 0, and ColDst the destination column, starting in 0
 askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 	% Output the current player %
 	write('======= '), 
@@ -356,20 +373,23 @@ askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 	write('[From] Row ? '), getNumber(RowSrc),
 	write('[From] Column ? '), getNumber(ColSrc),
 	% ask how many tiles to be moved %
-	write('How many tiles ? '), getNumber(Num),
+	write('How many tiles to be moved ? '), getNumber(Num),
 	% ask the destination coordinates %
 	write('[To] Row ? '), getNumber(RowDst),
 	write('[To] Column ? '), getNumber(ColDst).
 
-startPlayerVPlayer:-
-	% initialize the board %
-	initialBoard(Board),
-	gamePlayerVPlayer(Board).	
-
-gamePlayerVPlayer(Board):-
-	gameWhitePlayer(Board, NewBoard), clear_console,
-	gameBlackPlayer(NewBoard, NewNewBoard), clear_console,
-	gamePlayerVPlayer(NewNewBoard).
+gameWhitePlayerFirstRound(Board, NewBoard):-
+	% display current game state %
+	display_game(Board),
+	% ask the input for white tiles player %
+	askWhitePlayerFirstInput(RowDst_White-ColDst_White),
+	move([w, 2-1, ColDst_White-RowDst_White, 1], Board, Board1) -> (
+		stretchBoard(Board1, NewBoard)
+	) ;  (
+		clear_console,
+		write('Error: Invalid move! Try again white player\n'),
+		gameWhitePlayerFirstRound(Board, NewBoard)
+	).
 
 gameWhitePlayer(Board, NewBoard):-
 	% display current game state %
@@ -383,7 +403,6 @@ gameWhitePlayer(Board, NewBoard):-
 		write('Error: Invalid move! Try again white player\n'),
 		gameWhitePlayer(Board, NewBoard)
 	).
-	
 
 gameBlackPlayer(Board, NewBoard):-
 	% display current game state %
@@ -397,3 +416,14 @@ gameBlackPlayer(Board, NewBoard):-
 		write('Error: Invalid move! Try again black player\n'),
 		gameBlackPlayer(Board, NewBoard)
 	).
+
+gamePlayerVPlayer(Board):-
+	gameBlackPlayer(Board, NewBoard), clear_console,
+	gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
+	gamePlayerVPlayer(NewNewBoard).
+
+startPlayerVPlayer:-
+	% initialize the board %
+	initialBoard(Board),
+	gameWhitePlayerFirstRound(Board, NewBoard), clear_console,
+	gamePlayerVPlayer(NewBoard).
