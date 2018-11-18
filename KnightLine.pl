@@ -311,7 +311,20 @@ move(Move,Board,NewBoard):-
 */
 valid_moves(Board,Player,ListOfMoves):-
   findall(X,take_piece(X,Board,Player-_),Results),
-  check_forall(Results,Board,ListOfMoves,[]).
+  check_forall(Results,Board,NewMoves,[]),
+  remove_results(Board,NewMoves,NewMoves,ListOfMoves).
+
+/*
+*Remove the positions in the board already occupied by another piece.
+*/
+remove_results(Board,[],List,List).
+remove_results(Board,[H|T],ResultList,List):-
+  take_piece(H,Board,Piece),
+  Piece \= e ->
+  delete(ResultList,H,NewList),
+  remove_results(Board,T,NewList,List),
+  List = Newlist;
+  remove_results(Board,T,ResultList,List).
 
 /*
 * This predicate is used get all the possible moves for
