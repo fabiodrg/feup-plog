@@ -154,26 +154,12 @@ replace_in_matrix(X1-Y1,Board,Element,NewBoard):-
   * and returns the result of it as another board.
   */
 move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
-  take_piece(X1-Y1,Board,PiecePlayer-PieceNumber),
-  NewPieceNumber is PieceNumber-Number,
-  replace_in_matrix(X1-Y1,Board,PiecePlayer-NewPieceNumber,NewBoard),
-  take_piece(X2-Y2,Board,Piece),
-  Piece = e,
-  replace_in_matrix(X2-Y2,NewBoard,PiecePlayer-Number,FinalBoard).
-
-/*
-* Moves a piece to a non-empty cell in the board,
-* and returns the result of it as another board.
-*/
-move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
-  take_piece(X1-Y1,Board,PiecePlayer-PieceNumber),
-  NewPieceNumber is PieceNumber-Number,
-  replace_in_matrix(X1-Y1,Board,PiecePlayer-NewPieceNumber,NewBoard),
-  take_piece(X2-Y2,Board,Piece),
-  Piece \= e,
-  take_piece(X2-Y2,Board,X-Y),
-  FinalNumber is Y + Number,
-  replace_in_matrix(X2-Y2,NewBoard,PiecePlayer-FinalNumber,FinalBoard).
+	take_piece(X1-Y1,Board,PiecePlayer-PieceNumber),
+	NewPieceNumber is PieceNumber-Number,
+	replace_in_matrix(X1-Y1,Board,PiecePlayer-NewPieceNumber,NewBoard),
+	take_piece(X2-Y2,Board,Piece),
+	Piece = e,
+	replace_in_matrix(X2-Y2,NewBoard,PiecePlayer-Number,FinalBoard).
 
 /*
 * Returns the Width or/and the Height of a matrix
@@ -326,30 +312,58 @@ check_adjacent_coords(Board,X-Y,Piece):-
 check_adjacent_coords(Board,X-Y,Piece):-
   verify_topright(X-Y,Board,Piece).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% BOT UTILITIES  %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+random_pieceNumber(Board,Move,Number):-
+	nth0(1,Move,Elem),
+	take_piece(Elem,Board,_-PieceNumber),
+	random(1,PieceNumber,Number).
 
-%%%%%%%% console utilities
 
+create_randomMove(Board,Move,Player):-
+    findall(X,take_piece(X,Board,Player-_),Results),
+    proper_length(Results,Length),
+    random(0,Length,RandomStart),
+    nth0(RandomStart,Results,Elem),
+    findall(X,(moves(Elem,X,Board), X \=e), NewResults),
+    proper_length(NewResults,NewLength),
+    random(0,Length,RandomEnd),
+    nth0(RandomEnd,NewResults,NewElem),
+    nth0(0,InitialMove,Elem,[]),
+    nth0(1,Move,NewElem,InitialMove).
+
+create_move(Player,InitialCoords,FinalCoords,Number,Move):-
+  	Move = [Player,InitialCoords,FinalCoords,Number].
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% CONSOLE  %%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Clears the console
 clear_console:-
-  clear_console(30),!.
+	clear_console(30),!.
 
 clear_console(0).
 clear_console(X):-
-  nl,
-  X1 is X-1,
-  clear_console(X1).
+	nl,
+	X1 is X-1,
+	clear_console(X1).
 
+% Waits for the user to hit 'Enter'
 enter_toContinue:-
-  write('Press Enter.'),nl,
-  continue,!.
+	write('Press Enter.'),nl,
+	continue,!.
 
 continue:-
-  get_char(_).
+	get_char(_).
 
+% Gets a single character from stream
 getChar(Input):-
   get_char(Input),
 	get_char(_).
 
-
+% Gets a single digit from stream. This predicate ensures the input is a digit between 0 and 9
 getInt(Input):-
 	get_code(TempInput),
 	% compute the decimal digit by subtracting 48, the ASCII code for number 0 %
@@ -357,6 +371,8 @@ getInt(Input):-
 	% check the range. If Input isn't in [0,9], than the input was any other char %
 	Input >= 0, Input =< 9.
 
+% Gets numbers from the user. It reads numbers until a non-digit character is found
+% Thus, if the input users types 123abc, it parses 123, reads 'a' which is invalid, but 'bc' remains in the buffer
 getNumber(Number):-
 	getInt(Input) -> (
 		getNumber(RemainderNumber) -> (
@@ -368,6 +384,7 @@ getNumber(Number):-
 		)
 	).
 
+/* Computes how many digits a number has */
 getNumberLen(Number, Size):-
 	getNumberLen_(Number, 0, Size).
 getNumberLen_(Number, CurrentSize, Size):-
