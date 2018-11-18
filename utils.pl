@@ -53,6 +53,18 @@ isColumnEmpty([H|T], N):-
 	Tile = e,
 	isColumnEmpty(T, N).
 
+stretchBoard(Board, NewBoard):-
+	% if the first row is not empty, add an empty row at the board's top %
+	\+ isRowEmpty(Board,0) -> appendEmptyRowTop(Board, Board1),
+	% if the last row is not empty, add an empty row at the boards' bottom %
+	get_height(Board1, Height), IndexLastRow is Height - 1,
+	\+ isRowEmpty(Board1, IndexLastRow) -> appendEmptyRowBottom(Board1, Board2),
+	% if the left column is not empty, add an empty column in the left side %
+	\+ isColumnEmpty(Board2, 0) -> appendEmptyColumnLeft(Board2, Board3),
+	% if the right column is not empty, add an empty column in the right side %
+	get_width(Board3, Width), IndexLastCol is Width - 1,
+	\+ isColumnEmpty(Board3, IndexLastCol) -> appendEmptyColumnRight(Board3, NewBoard).
+
 %%%%%%%%%%% until here
 
 %%% insert coords
