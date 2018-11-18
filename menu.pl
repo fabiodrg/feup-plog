@@ -67,10 +67,6 @@ validate_start(X):-
   write('Valid'),
   nl.
 
-test_move:-
-  initialBoard(X),
-  make_move(X,b).
-
 create_move(Player,InitialCoords,FinalCoords,Number,Move):-
   Move = [Player,InitialCoords,FinalCoords,Number,Number].
 

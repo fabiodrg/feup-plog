@@ -164,11 +164,6 @@ replace_in_matrix(X1-Y1,Board,Element,NewBoard):-
   replace_item(ElemList,X1,Element,NewList),
   replace_item(Board,Y1,NewList,NewBoard).
 
-test_move:-
-  midBoard(X),
-  move_piece(3-1,1-2,2,X,Y),
-  write(Y).
-
 %%%move um determinado Number peça da pos x1-y1 para x2-y2  e retorna no final board
 move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
   take_piece(X1-Y1,Board,PiecePlayer-PieceNumber),
@@ -346,7 +341,8 @@ getNumber(Number):-
 	getInt(Input) -> (
 		getNumber(RemainderNumber) -> (
 			getNumberLen(RemainderNumber, L),
-			Number is Input*exp(10,L) + RemainderNumber
+			Aux = integer(Input*exp(10,L)),
+			Number is Aux + RemainderNumber
 		) ; (
 			Number = Input	
 		)

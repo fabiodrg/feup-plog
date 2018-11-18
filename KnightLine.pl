@@ -353,13 +353,13 @@ askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 	( (Player = b, write('Black')) ; (Player = w, write('White')) ),
 	write(' Player ======='), nl,
 	% ask the source tile stack coordinates % 
-	write('[From] Row ? '), getInt(RowSrc), getInt(_),
-	write('[From] Column ? '), getInt(ColSrc), getInt(_),
+	write('[From] Row ? '), getNumber(RowSrc),
+	write('[From] Column ? '), getNumber(ColSrc),
 	% ask how many tiles to be moved %
-	write('How many tiles ? '), getInt(Num), getInt(_),
+	write('How many tiles ? '), getNumber(Num),
 	% ask the destination coordinates %
-	write('[To] Row ? '), getInt(RowDst), getInt(_),
-	write('[To] Column ? '), getInt(ColDst), getInt(_).
+	write('[To] Row ? '), getNumber(RowDst),
+	write('[To] Column ? '), getNumber(ColDst).
 
 startPlayerVPlayer:-
 	% initialize the board %
