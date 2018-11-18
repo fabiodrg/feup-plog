@@ -155,6 +155,7 @@ replace_in_matrix(X1-Y1,Board,Element,NewBoard):-
   */
 move_piece(X1-Y1,X2-Y2,Number,Board,FinalBoard):-
 	take_piece(X1-Y1,Board,PiecePlayer-PieceNumber),
+	Number < PieceNumber,
 	NewPieceNumber is PieceNumber-Number,
 	replace_in_matrix(X1-Y1,Board,PiecePlayer-NewPieceNumber,NewBoard),
 	take_piece(X2-Y2,Board,Piece),

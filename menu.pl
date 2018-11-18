@@ -51,8 +51,8 @@ printGameMenu:-
   write('---------------------------------------'),nl,
   write('---------------------------------------'),nl,
   write('-          Select Mode                -'),nl,
-  write('-      Option 1: Player Vs Computer   -'),nl,
-  write('-      Option 2: Computer Vs Computer -'),nl,
+  write('-      Option 1: Player Vs Player     -'),nl,
+  write('-      Option 2: Player Vs Computer   -'),nl,
   write('-      Option 3: Go Back to Menu      -'),nl,
   write('---------------------------------------'),nl,
   write('---------------------------------------'),nl.
