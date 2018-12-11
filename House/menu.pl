@@ -1,5 +1,5 @@
 :-['utils'].
-
+:- use_module(library(lists)).
 %%%% Main menu
 
 
@@ -7,7 +7,7 @@ main_menu:-
   print_MainMenu,
   getChar(Input),
   (
-  Input = '1' -> start_puzzle,main_menu;
+  Input = '1' -> startPuzzle,main_menu;
   Input = '2';
   nl,
   write('Please choose a valid option.'), nl,
@@ -26,3 +26,14 @@ print_MainMenu:-
   write('-        Option 2: Exit Puzzle        -'),nl,
   write('---------------------------------------'),nl,
   write('---------------------------------------'),nl.
+
+
+
+
+
+startPuzzle:-
+  write('Select the size of the board.'), nl,
+  getInt(Size),
+  createBoard(Size,Board),
+  clear_console,
+  display_withcoords(Board).
