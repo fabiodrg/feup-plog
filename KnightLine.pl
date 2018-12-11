@@ -182,7 +182,6 @@ check_leftdiagonal(X-Y,Board,Value,Player,NewValue):-
   *Params
   *@Board - We need to give the board.
   *@Winner - The winner is returned as 'b' or 'w'
-  *Notes: This predicate is not well implemented
   */
 
 /*
@@ -310,8 +309,21 @@ move(Move,Board,NewBoard):-
 * Checks all the valid moves in a board for the given player.
 */
 valid_moves(Board,Player,ListOfMoves):-
-  findall(X,take_piece(X,Board,Player-_),Results),
-  check_forall(Results,Board,ListOfMoves,[]).
+  findall(X,(take_piece(X,Board,Player-Y), Y>1),Results),
+  check_forall(Results,Board,NewMoves,[]),
+  remove_results(Board,NewMoves,NewMoves,ListOfMoves).
+
+/*
+*Remove the positions in the board already occupied by another piece.
+*/
+remove_results(Board,[],List,List).
+remove_results(Board,[H|T],ResultList,List):-
+  take_piece(H,Board,Piece),
+  Piece \= e ->
+  delete(ResultList,H,NewList),
+  remove_results(Board,T,NewList,List),
+  List = Newlist;
+  remove_results(Board,T,ResultList,List).
 
 /*
 * This predicate is used get all the possible moves for
@@ -412,12 +424,16 @@ askPlayerInput(Player, RowSrc-ColSrc, Num, RowDst-ColDst):-
 	write('[To] Row ? '), getNumber(RowDst),
 	write('[To] Column ? '), getNumber(ColDst).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%% GAME ROUNDS %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Handles the first white player round, which is a special case
 % @param Board - The inital game board
 % @param NewBoard - The resultant board
 gameWhitePlayerFirstRound(Board, NewBoard):-
 	% display current game state %
-	display_game(Board),
+	display_withcoords(Board),
 	% ask the input for white tiles player %
 	askWhitePlayerFirstInput(RowDst_White-ColDst_White),
 	move([w, 2-1, ColDst_White-RowDst_White, 1], Board, Board1) -> (
@@ -466,19 +482,51 @@ gameBlackPlayer(Board, NewBoard):-
 		gameBlackPlayer(Board, NewBoard)
 	).
 
+
+choose_move(Board,Level,Move):-
+	Level = 1,
+	create_randomMove(Board,NewMove,b),
+	nth0(0,NewNewMove,b,NewMove),
+	random_pieceNumber(Board,NewNewMove,Number),
+	nth0(3,Move,Number,NewNewMove).
+
+gameBlackComputerEasy(Board,NewBoard):-
+  	choose_move(Board,1,Move),
+  	move(Move,Board,NewBoard).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% GAMES MODE %%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Handles the game rounds... 
 % TODO still doesn't check if some player won
+% gamePlayerVPlayer(Board):-
+% 	gameBlackPlayer(Board, NewBoard), clear_console,
+% 	gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
+% 	gamePlayerVPlayer(NewNewBoard).
+
 gamePlayerVPlayer(Board):-
 	gameBlackPlayer(Board, NewBoard), clear_console,
+	\+ game_over(NewBoard, _),
 	gameWhitePlayer(NewBoard, NewNewBoard), clear_console,
+	\+ game_over(NewNewBoard, _),
 	gamePlayerVPlayer(NewNewBoard).
 
+gamePlayerVComputer(Board):-
+  	gameBlackComputerEasy(Board,NewBoard),
+  	gameWhitePlayer(NewBoard,NewNewBoard),
+  	gamePlayerVComputer(NewNewBoard).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% INITIALIZE GAMES %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initializes a Player VS Player game
 startPlayerVPlayer:-
 	% initialize the board %
 	initialBoard(Board),
 	gameWhitePlayerFirstRound(Board, NewBoard), clear_console,
-	gamePlayerVPlayer(NewBoard).
+	\+ gamePlayerVPlayer(NewBoard) -> write(NewBoard).
+
+startPlayerVComputer:-
+    clear_console,
+    initialBoard(Board),
+	gameWhitePlayerFirstRound(Board, NewBoard), clear_console,
+    gamePlayerVComputer(NewBoard).
