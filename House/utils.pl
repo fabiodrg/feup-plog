@@ -25,22 +25,18 @@ display_withcoords(Board):-
   insert_Coords(Board,X1),
   display_game(X1).
 
-
 display_game([]):-
     nl.
-
 
 display_game([H|T]):-
     print_line(H),
     nl,
     display_game(T).
 
-
 print_line([]).
 print_line([H|T]):-
         print_cell(H),
         print_line(T).
-
 
 print_cell(X):-
     translate(X,W),
@@ -78,9 +74,6 @@ createBoard(Size,Board):-
     findall(e, between(1, Size, _), List),
 	findall(List, between(1, Size, _), Board).
 
-
-
-
 insert_Coords(Board,NewBoard):-
     proper_length(Board,VerticalLength),
     insert_vertical(Board,VerticalLength,0,FinalBoard),
@@ -103,6 +96,11 @@ replace_item([H|T],Index,Element,[H|R]):-
   Index > -1,
   NewIndex is Index-1,
   replace_item(T,NewIndex,Element,R).
+
+replace_in_matrix(X1-Y1,Board,Element,NewBoard):-
+  get_elem(Board,Y1,ElemList),
+  replace_item(ElemList,X1,Element,NewList),
+  replace_item(Board,Y1,NewList,NewBoard).
 
 create_hindex_list(FinalList,Size,Size,FinalList).
 create_hindex_list(List,Size,Index,FinalList):-
