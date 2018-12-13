@@ -38,10 +38,20 @@ startPuzzle:-
   createBoard(Size,Board),
   clear_console,
   display_withcoords(Board),
-  getCoords([],Size,0,NewList),
+  getCoords([],Board,Size,0,NewList),
   sort(NewList,SortedList),
-  write(SortedList), nl,
-  write(NewBoard), nl.
+  verify_list(SortedList),
+  write('List you created:  '),
+  write(SortedList), nl.
+
+verify_list(List):-
+  length(List, Size),
+  Size >= 4,!.
+verify_list(_):-
+  write('Create a new Board'),nl,
+  startPuzzle.
+
+
 
 
 checkInput(Xpos,Ypos,Size):-
@@ -49,20 +59,20 @@ checkInput(Xpos,Ypos,Size):-
   between(0, Size,Ypos),
   number(Xpos),
   between(0, Size,Xpos).
+  
 
 %%getCoords(FinalList,_,_,FinalList).
-getCoords(List,Size,Counter,FinalList):-
+getCoords(List,Board,Size,Counter,FinalList):-
   write('Where do you want to put the House'),nl,
   askCoords(Ypos-Xpos), 
   checkInput(Xpos,Ypos,Size),
   nth0(Counter,NewList,Ypos-Xpos,List),
   Counter1 is Counter + 1,
- %% write('Continue:  '),
-  %%read(State),
-  %%State = 'y',
-  getCoords(NewList,Size,Counter1,FinalList),!.
+  replace_in_matrix(Xpos-Ypos,Board,h,NewBoard),
+  display_withcoords(NewBoard),
+  getCoords(NewList,NewBoard,Size,Counter1,FinalList),!.
 
-getCoords(FinalList,_,_,FinalList):-
+getCoords(FinalList,_,_,_,FinalList):-
   write('List Built'),nl.
 
 fillBoard(Board,Size,NewBoard,Points,List):-
