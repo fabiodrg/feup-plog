@@ -1,0 +1,5 @@
+{
+    "prolog.linter.run": "onSave",
+    "prolog.executablePath": "/usr/local/bin/sicstus",
+    "prolog.dialect": "ecl"
+}

@@ -20,7 +20,6 @@ continue:-
 
 %% print board %%
 
-
 display_withcoords(Board):-
   insert_Coords(Board,X1),
   display_game(X1).
@@ -47,7 +46,7 @@ print_cell(X):-
   write(X),
   write('  |').
 
-translate(h,'H').
+translate(h,'H  ').
 translate(e,'   ').
 
 
@@ -66,6 +65,38 @@ getInt(Input):-
 	% compute the decimal digit by subtracting 48, the ASCII code for number 0 %
 	Input is TempInput - 48.
 
+
+% Gets numbers from the user. It reads numbers until a non-digit character is found
+% Thus, if the input users types 123abc, it parses 123, reads 'a' which is invalid, but 'bc' remains in the buffer
+getNumber(Number):-
+	getInt(Input) -> (
+		getNumber(RemainderNumber) -> (
+			getNumberLen(RemainderNumber, L),
+			Aux = integer(Input*exp(10,L)),
+			Number is Aux + RemainderNumber
+		) ; (
+			Number = Input	
+		)
+	).
+
+/* Computes how many digits a number has */
+getNumberLen(Number, Size):-
+	getNumberLen_(Number, 0, Size).
+getNumberLen_(Number, CurrentSize, Size):-
+	Number < 10, Number >= 0,
+	Size is CurrentSize + 1.
+getNumberLen_(Number, CurrentSize, Size):-
+	Number > 9,
+	Aux is Number / 10,
+	NewSize is CurrentSize + 1,
+	getNumberLen_(Aux, NewSize, Size).
+
+
+
+askCoords(RowDst-ColDst):-
+	% ask the destination coordinates %
+	write('[To] Row ? '),nl,  read(RowDst), continue,
+	write('[To] Column ? '),nl, read(ColDst), continue.
 
 %%%% Board Predicates
 
@@ -101,6 +132,9 @@ replace_in_matrix(X1-Y1,Board,Element,NewBoard):-
   get_elem(Board,Y1,ElemList),
   replace_item(ElemList,X1,Element,NewList),
   replace_item(Board,Y1,NewList,NewBoard).
+
+get_elem(Board,Index,Elem):-
+    nth0(Index,Board,Elem).
 
 create_hindex_list(FinalList,Size,Size,FinalList).
 create_hindex_list(List,Size,Index,FinalList):-

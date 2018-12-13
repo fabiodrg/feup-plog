@@ -34,20 +34,45 @@ print_MainMenu:-
 startPuzzle:-
   write('Select the size of the board.'), nl,
   getInt(Size),
+  skip_line,
   createBoard(Size,Board),
   clear_console,
   display_withcoords(Board),
-  fillBoard(Board,NewBoard).
+  getCoords([],Size,0,NewList),
+  sort(NewList,SortedList),
+  write(SortedList), nl,
+  write(NewBoard), nl.
 
 
+checkInput(Xpos,Ypos,Size):-
+  number(Ypos),
+  between(0, Size,Ypos),
+  number(Xpos),
+  between(0, Size,Xpos).
 
+%%getCoords(FinalList,_,_,FinalList).
+getCoords(List,Size,Counter,FinalList):-
+  write('Where do you want to put the House'),nl,
+  askCoords(Ypos-Xpos), 
+  checkInput(Xpos,Ypos,Size),
+  nth0(Counter,NewList,Ypos-Xpos,List),
+  Counter1 is Counter + 1,
+ %% write('Continue:  '),
+  %%read(State),
+  %%State = 'y',
+  getCoords(NewList,Size,Counter1,FinalList),!.
 
-fillBoard(Board,NewBoard):-
+getCoords(FinalList,_,_,FinalList):-
+  write('List Built'),nl.
+
+fillBoard(Board,Size,NewBoard,Points,List):-
  write('Where do you want to put the House'),nl,
- write('Row:  '), nl,
- getInt(Ypos),
- write('Collumn:  '),nl,
- getInt(Xpos),
- %%% ver se é um numero
- %%% restrições ve se esta out of the bounds
- replace_in_matrix(Xpos-Ypos,Board,h,CurrentBoard).
+ askCoords(Ypos-Xpos), 
+ checkInput(Xpos,Ypos,Size),
+ write(Board),
+ replace_in_matrix(Xpos-Ypos,Board,h,NewBoard),
+ display_withcoords(NewBoard),
+ append(Points,Xpos-Ypos,List),
+ fillBoard(NewBoard,Size,_,List,_).
+
+
