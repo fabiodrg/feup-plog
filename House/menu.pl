@@ -3,7 +3,7 @@
 %%%% Main menu
 
 
-main_menu:-
+start:-
   print_MainMenu,
   getChar(Input),
   (
@@ -12,7 +12,7 @@ main_menu:-
   nl,
   write('Please choose a valid option.'), nl,
   enterContinue, nl,
-  main_menu
+  start
   ).
 
 
@@ -48,10 +48,10 @@ verify_list(List):-
   length(List, Size),
   Size >= 4,!.
 verify_list(_):-
+  clear_console,
+  write('Invalid Input'), nl,
   write('Create a new Board'),nl,
   startPuzzle.
-
-
 
 
 checkInput(Xpos,Ypos,Size):-
