@@ -7,7 +7,7 @@ start:-
   print_MainMenu,
   getChar(Input),
   (
-  Input = '1' -> startPuzzle,main_menu;
+  Input = '1' -> startPuzzle,startPuzzle;
   Input = '2';
   nl,
   write('Please choose a valid option.'), nl,
@@ -33,7 +33,7 @@ print_MainMenu:-
 
 startPuzzle:-
   write('Select the size of the board.'), nl,
-  getInt(Size),
+  read(Size),
   skip_line,
   createBoard(Size,Board),
   clear_console,
@@ -59,14 +59,14 @@ checkInput(Xpos,Ypos,Size):-
   between(0, Size,Ypos),
   number(Xpos),
   between(0, Size,Xpos).
-  
+    
 
 %%getCoords(FinalList,_,_,FinalList).
 getCoords(List,Board,Size,Counter,FinalList):-
   write('Where do you want to put the House'),nl,
   askCoords(Ypos-Xpos), 
   checkInput(Xpos,Ypos,Size),
-  nth0(Counter,NewList,Ypos-Xpos,List),
+  nth0(Counter,NewList,[Xpos,Ypos],List),
   Counter1 is Counter + 1,
   replace_in_matrix(Xpos-Ypos,Board,h,NewBoard),
   display_withcoords(NewBoard),
