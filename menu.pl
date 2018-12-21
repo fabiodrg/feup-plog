@@ -1,6 +1,7 @@
 %%%%imports
 :-['KnightLine'].
 :-['utils'].
+% :-['server'].
 :- use_module(library(lists)).
 :- use_module(library(random)).
 
