@@ -18,7 +18,13 @@ example1(
 
 example2(
 	[
-		[0,0], [0,3], [0,4], [0,5], [0,1], [0,8]
+		[0,0], [0,1], [0,3],
+		[2,0], [2,3],
+		[3,1]
+	]).
+
+example3([
+	[0,0], [0,1], [1,0], [1,1]
 	]).
 /*
  * P1 - List [X1, Y1]
@@ -47,20 +53,21 @@ solver(ListHouses, PuzzleSize):-
 	all_distinct(Indexes),
 	labeling([],Indexes),
 	% find the distances %
-	findDistances(Indexes, ListHouses, NumHouses, D1, D2),
+	findDistances(Indexes, ListHouses, D1, D2),
 	labeling([],[D1,D2]),
 	write(D1), write('-'),
 	write(D2).
 
-findDistances([], _, _, _, _).
+findDistances([], _, _, _).
 % The plog  %
-findDistances(Indexes, ListHouses, NumHouses, D1, D2):-
-	domain([IndexHouse1, IndexHouse2], 1, NumHouses),
+findDistances(Indexes, ListHouses, D1, D2):-
+	% get the minimum and maximum %
+	%domain([IndexHouse1, IndexHouse2], 1, NumHouses),
 	% pick one house %
-	element(IndexHouse1, Indexes, IndexHouse1),
+	element(_, Indexes, IndexHouse1),
 	nth1(IndexHouse1, ListHouses, P1),
 	% pick second house %
-	element(IndexHouse2, Indexes, IndexHouse2),
+	element(_, Indexes, IndexHouse2),
 	nth1(IndexHouse2, ListHouses, P2),
 	% ensure both index are different %
 	IndexHouse1 #\= IndexHouse2,
@@ -70,4 +77,4 @@ findDistances(Indexes, ListHouses, NumHouses, D1, D2):-
 	% remove the indexes from list %
 	delete(Indexes, IndexHouse1, Aux1),
 	delete(Aux1, IndexHouse2, Aux2),
-	findDistances(Aux2, ListHouses, NumHouses, D1,  D2).
+	findDistances(Aux2, ListHouses, D1, D2).
