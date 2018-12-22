@@ -1,40 +1,13 @@
 :-use_module(library(clpfd)).
 :-use_module(library(lists)).
 :-['utils'].
-/**/
-example(
-	[
-		[0,0], [1,0], 
-		[0,1], [2,1]
-	]).
-
-example1(
-	[
-		[0,0], [2,0], [3,0],
-		[2,1], [3,1],
-		[2,2],
-		[0,3], [3,3] 
-	]).
-
-example2(
-	[
-		[0,0], [0,1], [0,3],
-		[2,0], [2,3],
-		[3,1]
-	]).
-
-example3([
-	[0,0], [0,1], [1,0], [1,1]
-	]).
-
-example4([[0,0], [2,0], [0,2], [2,2]]).
+:-['puzzles'].
 
 
 solver(ListHouses, PuzzleSize, PairedHouses):-
 	% a list with the two possible distances (distinct) %
 	MaxDistance is PuzzleSize*PuzzleSize,
 	domain([D1,D2], 1, MaxDistance),
-	/*all_distinct([D1,D2]),*/
 	% create an auxiliar list with indexes for the list of houses %
 	% the elements in list of houses are lists with a pair of values X and Y %
 	% the predicate element only works with indexes, thus we need list of houses %
@@ -45,13 +18,16 @@ solver(ListHouses, PuzzleSize, PairedHouses):-
 	labeling([],Indexes),
 	% find the distances %
 	findDistances(Indexes, ListHouses, [], PairedHouses, D1, D2),
-	labeling([],[D1,D2]),
+	statistics(walltime, _),
+	labeling([enum],[D1,D2]),
+	statistics(walltime, [_, ElapsedTime | _]),
 	% ensure all distances are different %
 	secondCheck([], L, PairedHouses, ListHouses),
 	sort(L, LSorted),
 	length(LSorted, ListSize), ListSize #= 2,
-	write(D1), write('-'),
-	write(D2).
+	write(D1), write('-'),write(D2),
+	format('Time: ~3d', ElapsedTime), nl,
+	fd_statistics.
 
 findDistances([], _, X, X, _, _).
 % The plog  %
