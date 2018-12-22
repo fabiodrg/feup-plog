@@ -1,7 +1,6 @@
 :-use_module(library(clpfd)).
 :-['utils'].
 
-
 populateHouses(Houses,Houses,0).
 populateHouses(Houses,ListAux,NumberOfPieces):-
     append(ListAux, [A1], ListResul),
@@ -16,17 +15,15 @@ inLoop(Value, [H|T]):-
     element(2,H,Y2),
     X1 #\= X2 #\/ Y1 #\= Y2,
     inLoop(Value,T),!.
-    
-    
+        
 generateDistinct([]).
 generateDistinct([H|T]):-
     inLoop(H,T),
     generateDistinct(T),!.
 
-
 defineDomain([],_).
 defineDomain([H|T], Size):-
-    domain(H,1,Size),
+    domain(H,0,Size),
     defineDomain(T,Size),!.
 
 labelingHouses([]).
@@ -40,19 +37,14 @@ calculateDistance([X,Y| T],ListAux, ListFinal):-
     append(ListAux,[D],NewList),
     calculateDistance(T,NewList,ListFinal),!.
 
-
 createSubList([]).
 createSubList([H|T]):-
     length(SubList,2),
     append(SubList,[],H),
     createSubList(T),!.
     
-
-
 createList(Lenght,List):-
     length(List, Lenght).
-
-    
 
 generator(Size,Houses,Number):-
     createList(Number,Houses),
