@@ -41,9 +41,22 @@ calculateDistance([X,Y| T],ListAux, ListFinal):-
     calculateDistance(T,NewList,ListFinal),!.
 
 
+createSubList([]).
+createSubList([H|T]):-
+    length(SubList,2),
+    append(SubList,[],H),
+    createSubList(T),!.
+    
+
+
+createList(Lenght,List):-
+    length(List, Lenght).
+
+    
+
 generator(Size,Houses,Number):-
-    Number = 6,
-    Houses = [[A1,A2],[B1,B2],[C1,C2],[D1,D2],[E1,E2],[F1,F2]], 
+    createList(Number,Houses),
+    createSubList(Houses),
     NewSize is Size - 1,
     defineDomain(Houses,NewSize),
     generateDistinct(Houses),
