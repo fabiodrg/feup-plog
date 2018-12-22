@@ -1,4 +1,6 @@
 :-use_module(library(clpfd)).
+:-['utils'].
+
 
 populateHouses(Houses,Houses,0).
 populateHouses(Houses,ListAux,NumberOfPieces):-
@@ -32,14 +34,24 @@ labelingHouses([H|T]):-
     labeling([],H),
     labelingHouses(T).
 
-distance()
+calculateDistance([],ListFinal,ListFinal).
+calculateDistance([X,Y| T],ListAux, ListFinal):-
+    distance(X, Y, D),
+    append(ListAux,[D],NewList),
+    calculateDistance(T,NewList,ListFinal),!.
 
-generator(Size,Houses):-
-    Houses = [[A1,A2],[B1,B2],[C1,C2],[D1,D2],[E1,E2],[F1,F2],[G1,G2]], 
-    defineDomain(Houses,Size),
+
+generator(Size,Houses,Number):-
+    Number = 6,
+    Houses = [[A1,A2],[B1,B2],[C1,C2],[D1,D2],[E1,E2],[F1,F2]], 
+    NewSize is Size - 1,
+    defineDomain(Houses,NewSize),
     generateDistinct(Houses),
-
-    labelingHouses(Houses).
+    labelingHouses(Houses),
+    calculateDistance(Houses,[],DistanceList),
+    sort(DistanceList,NewDistanceList),
+    length(NewDistanceList, N),
+    N #=2.
     
 
 
