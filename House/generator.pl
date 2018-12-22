@@ -1,11 +1,6 @@
 :-use_module(library(clpfd)).
 :-['utils'].
 
-populateHouses(Houses,Houses,0).
-populateHouses(Houses,ListAux,NumberOfPieces):-
-    append(ListAux, [A1], ListResul),
-    NumberOfPieces1 is NumberOfPieces -1;
-    populateHouses(Houses,ListResul,NumberOfPieces1).
     
 inLoop(_,[]).
 inLoop(Value, [H|T]):-
