@@ -19,7 +19,7 @@ solver(ListHouses, PuzzleSize, PairedHouses):-
 	% find the distances %
 	findDistances(Indexes, ListHouses, [], PairedHouses, D1, D2),
 	statistics(walltime, _),
-	labeling([enum],[D1,D2]),
+	labeling([middle,max,up],[D1,D2]),
 	statistics(walltime, [_, ElapsedTime | _]),
 	% ensure all distances are different %
 	secondCheck([], L, PairedHouses, ListHouses),

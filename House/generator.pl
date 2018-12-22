@@ -28,7 +28,7 @@ defineDomain([H|T], Size):-
 
 labelingHouses([]).
 labelingHouses([H|T]):-
-    labeling([],H),
+    labeling([middle],H),
     labelingHouses(T).
 
 calculateDistance([],ListFinal,ListFinal).
