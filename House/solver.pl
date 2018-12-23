@@ -108,6 +108,7 @@ getAllDistances(ListDistances, L, [H|T], ListHouses):-
 	append(ListDistances, [D], NewListDistaces),
 	getAllDistances(NewListDistaces, L, T, ListHouses).
 
+% Generates board
 getPuzzleBoard(_, [], Board, Board, _).
 getPuzzleBoard(ListHouses, [[Index1,Index2 | []] | T], Board, FinalBoard, PairNum):-
 	% get houses coordinates %
@@ -121,3 +122,9 @@ getPuzzleBoard(ListHouses, [[Index1,Index2 | []] | T], Board, FinalBoard, PairNu
 	% inc %
 	NextPairNum is PairNum + 1,
 	getPuzzleBoard(ListHouses, T, Board2, FinalBoard,NextPairNum).
+
+getPuzzleBoardHousesOnly([], Board, Board).
+getPuzzleBoardHousesOnly([[X,Y | []] | T], Board, FinalBoard):-
+	% fill board %
+	replace_in_matrix(X-Y, Board, 8, Board1),
+	getPuzzleBoardHousesOnly(T, Board1, FinalBoard).

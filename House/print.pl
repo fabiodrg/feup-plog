@@ -3,6 +3,10 @@ showPairedHouses(ListHouses, PuzzleSize, ListPairedHouses):-
 	getPuzzleBoard(ListHouses, ListPairedHouses, EmptyBoard, FinalBoard, 1),
 	printPuzzleBoard(FinalBoard).
 
+showHousesOnly(ListHouses, PuzzleSize):-
+	createBoard(EmptyBoard, PuzzleSize),
+	getPuzzleBoardHousesOnly(ListHouses, EmptyBoard, FinalBoard),
+	printPuzzleBoard(FinalBoard).
 
 printPuzzleBoardLine([]):- write(' |').
 printPuzzleBoardLine([H|T]):-
