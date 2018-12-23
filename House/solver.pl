@@ -24,7 +24,11 @@ solver(ListHouses, PuzzleSize, PairedHouses):-
 	% find the distances %
 	findDistances(Indexes, ListHouses, [], PairedHouses, D1, D2),
 	statistics(walltime, _),
+<<<<<<< HEAD
 	labeling([middle],[D1,D2]),
+=======
+	labeling([middle,max,up],[D1,D2]),
+>>>>>>> fb6dfb13d8359c96c310d7b8867c899a2756a00e
 	statistics(walltime, [_, ElapsedTime | _]),
 	% ensure all distances are different %
 	secondCheck([], L, PairedHouses, ListHouses),
