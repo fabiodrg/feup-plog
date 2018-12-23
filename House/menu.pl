@@ -1,8 +1,9 @@
+:-use_module(library(lists)).
+:-use_module(library(clpfd)).
 :-['solver'].
 :-['utils'].
 :-['generator'].
 :-['puzzles'].
-:- use_module(library(lists)).
 
 %
 % Displays main menu
@@ -110,10 +111,11 @@ fillBoard(Board,Size,NewBoard,Points,List):-
 
 
 solveDefaultPuzzle(ListHouses, Size):-
+	clear_console,
 	write('---------------------------------------'),nl,
 	write('Original board:'), nl,
 	write('---------------------------------------'),nl,
-	showHousesOnly(Houses, Size),
+	showHousesOnly(ListHouses, Size),
 	% run solver %
 	solver(ListHouses, Size, ListPairedHouses),
 	write('---------------------------------------'),nl,
@@ -139,6 +141,7 @@ solvePuzzle6x6:-
 	solveDefaultPuzzle(ListHouses,6).
 
 generatePuzzle:-
+	clear_console,
 	write('---------------------------------------'),nl,
 	write('Generated board:'), nl,
 	write('---------------------------------------'),nl,

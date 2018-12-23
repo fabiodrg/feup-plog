@@ -1,5 +1,3 @@
-:- use_module(library(between)).
-
 /*
  * P1 - List [X1, Y1]
  * P2 - List [X2, Y2]

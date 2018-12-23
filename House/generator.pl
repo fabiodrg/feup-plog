@@ -1,7 +1,3 @@
-:-use_module(library(clpfd)).
-:-['utils'].
-
-    
 inLoop(_,[]).
 inLoop(Value, [H|T]):-
     element(1, Value, X1),

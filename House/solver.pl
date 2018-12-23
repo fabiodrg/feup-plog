@@ -1,7 +1,3 @@
-:-use_module(library(clpfd)).
-:-use_module(library(lists)).
-:-['utils'].
-:-['puzzles'].
 :-['print'].
 
 %
@@ -39,6 +35,9 @@ solver(ListHouses, PuzzleSize, PairedHouses):-
 	statistics(walltime, [_, ElapsedTime | _]),
 
 	% display statistics %
+	nl,write('---------------------------------------'),nl,
+	write('Statistics:'), nl,
+	write('---------------------------------------'),nl,
 	format('Time: ~3d', ElapsedTime), nl,
 	fd_statistics, nl.
 
