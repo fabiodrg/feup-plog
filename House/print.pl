@@ -1,4 +1,4 @@
-showPairedHouses(ListHouses, PuzzleSize, ListPairedHouses, FinalBoard):-
+showPairedHouses(ListHouses, PuzzleSize, ListPairedHouses):-
 	createBoard(EmptyBoard, PuzzleSize),
 	getPuzzleBoard(ListHouses, ListPairedHouses, EmptyBoard, FinalBoard, 1),
 	printPuzzleBoard(FinalBoard).

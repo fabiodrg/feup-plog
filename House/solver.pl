@@ -30,7 +30,7 @@ solver(ListHouses, PuzzleSize, PairedHouses):-
 
 	% find distances %
 	findDistances(Indexes, ListHouses, [], PairedHouses, Distances),
-	labeling([middle,max,up], Distances),
+	labeling([middle], Distances),
 
 	% ensure there are exactly two different distances between paired houses %
 	exactlyTwoDistances(PairedHouses, ListHouses),
@@ -108,17 +108,6 @@ getAllDistances(ListDistances, L, [H|T], ListHouses):-
 	append(ListDistances, [D], NewListDistaces),
 	getAllDistances(NewListDistaces, L, T, ListHouses).
 
-%
-% Creates a matrix filled with 0's
-%
-fillBoard([], _).
-fillBoard([H|T], Size):-
-	length(H, Size),
-	fillBoard(T, Size).
-
-getCoordX(X, [X|_]).
-getCoordY(Y, [_,Y | []]).
-
 getPuzzleBoard(_, [], Board, Board, _).
 getPuzzleBoard(ListHouses, [[Index1,Index2 | []] | T], Board, FinalBoard, PairNum):-
 	% get houses coordinates %
@@ -129,7 +118,6 @@ getPuzzleBoard(ListHouses, [[Index1,Index2 | []] | T], Board, FinalBoard, PairNu
 	% fill board %
 	replace_in_matrix(X1-Y1, Board, PairNum, Board1),
 	replace_in_matrix(X2-Y2, Board1, PairNum, Board2),
-	write(Board2),
 	% inc %
 	NextPairNum is PairNum + 1,
 	getPuzzleBoard(ListHouses, T, Board2, FinalBoard,NextPairNum).

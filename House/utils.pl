@@ -13,6 +13,9 @@ distance(P1, P2, D):-
 	element(2, P2, Y2),
 	D #= abs(X2-X1) * abs(X2-X1) + abs(Y2-Y1) * abs(Y2-Y1).
 
+getCoordX(X, [X|_]).
+getCoordY(Y, [_,Y | []]).
+
 % Clears the console
 clear_console:-
 	clear_console(30),!.
