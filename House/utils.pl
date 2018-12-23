@@ -113,8 +113,8 @@ askCoords(RowDst-ColDst):-
 %%%% Board Predicates
 
 
-createBoard(Size,Board):-
-    findall(e, between(1, Size, _), List),
+createBoard(Board, Size):-
+    findall(0, between(1, Size, _), List),
 	findall(List, between(1, Size, _), Board).
 
 insert_Coords(Board,NewBoard):-

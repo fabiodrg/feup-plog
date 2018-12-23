@@ -2,8 +2,13 @@
 :-use_module(library(lists)).
 :-['utils'].
 :-['puzzles'].
+:-['print'].
 
-
+%
+% Attempts to solve the house puzzle
+% +ListHouses : A list of house's coordinates, where each element is a list of two values, X and Y
+% +PuzzleSize : The puzzle's size
+% -PairedHouses : The list of paired houses. It returns a list of lists, where the last contains two values which are the indexes of the paired houses. A value of 1 means the first element from ListHouses, and so forth
 solver(ListHouses, PuzzleSize, PairedHouses):-
 	% a list with the two possible distances (distinct) %
 	MaxDistance is PuzzleSize*PuzzleSize,
@@ -59,3 +64,29 @@ secondCheck(ListDistances, L, [H|T], ListHouses):-
 	distance(P1, P2, D),
 	append(ListDistances, [D], NewListDistaces),
 	secondCheck(NewListDistaces, L, T, ListHouses).
+
+%
+% Creates a matrix filled with 0's
+%
+fillBoard([], _).
+fillBoard([H|T], Size):-
+	length(H, Size),
+	fillBoard(T, Size).
+
+getCoordX(X, [X|_]).
+getCoordY(Y, [_,Y | []]).
+
+getPuzzleBoard(_, [], Board, Board, _).
+getPuzzleBoard(ListHouses, [[Index1,Index2 | []] | T], Board, FinalBoard, PairNum):-
+	% get houses coordinates %
+	nth1(Index1, ListHouses, HouseCoord1),
+	nth1(Index2, ListHouses, HouseCoord2),
+	getCoordX(X1, HouseCoord1), getCoordY(Y1, HouseCoord1),
+	getCoordX(X2, HouseCoord2), getCoordY(Y2, HouseCoord2),
+	% fill board %
+	replace_in_matrix(X1-Y1, Board, PairNum, Board1),
+	replace_in_matrix(X2-Y2, Board1, PairNum, Board2),
+	write(Board2),
+	% inc %
+	NextPairNum is PairNum + 1,
+	getPuzzleBoard(ListHouses, T, Board2, FinalBoard,NextPairNum).

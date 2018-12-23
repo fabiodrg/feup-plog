@@ -35,7 +35,7 @@ startPuzzle:-
   write('Select the size of the board.'), nl,
   read(Size),
   skip_line,
-  createBoard(Size,Board),
+  createBoard(Board,Size),
   clear_console,
   display_withcoords(Board),
   getCoords([],Board,Size,0,NewList),
