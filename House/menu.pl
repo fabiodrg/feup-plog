@@ -11,7 +11,7 @@ start:-
 	print_MainMenu,
 	getChar(Input),
 	(
-		Input = '1' -> startPuzzle,startPuzzle;
+		Input = '1' -> solveUserPuzzle;
 		Input = '2' -> solvePuzzle3x3;
 		Input = '3' -> solvePuzzle4x4;
 		Input = '4' -> solvePuzzle5x5;
@@ -39,19 +39,33 @@ print_MainMenu:-
 	write('---------------------------------------'),nl,
 	write('---------------------------------------'),nl.
 
-
-startPuzzle:-
+getUserPuzzle(PuzzleList,Lenght):-
 	write('Select the size of the board.'), nl,
 	read(Size),
 	skip_line,
 	createBoard(Board,Size),
 	clear_console,
+	write('To stop entering coordinates enter "f." in both row and collumn'), nl,
 	display_withcoords(Board),
 	getCoords([],Board,Size,0,NewList),
 	sort(NewList,SortedList),
 	verify_list(SortedList),
-	write('List you created:  '),
-	write(SortedList), nl.
+	Lenght = Size,
+	PuzzleList = SortedList.
+
+solveUserPuzzle:-
+	getUserPuzzle(ListHouses,Size),
+	clear_console,
+	write('---------------------------------------'),nl,
+	write('Original board:'), nl,
+	write('---------------------------------------'),nl,
+	showHousesOnly(ListHouses, Size),
+	% run solver %
+	solver(ListHouses, Size, ListPairedHouses),
+	write('---------------------------------------'),nl,
+	write('Final board:'), nl,
+	write('---------------------------------------'),nl,
+	showPairedHouses(ListHouses, Size, ListPairedHouses).
 
 verify_list(List):-
 	length(List, Size),
