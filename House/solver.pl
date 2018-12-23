@@ -11,32 +11,52 @@
 % -PairedHouses : The list of paired houses. It returns a list of lists, where the last contains two values which are the indexes of the paired houses. A value of 1 means the first element from ListHouses, and so forth
 solver(ListHouses, PuzzleSize, PairedHouses):-
 	% a list with the two possible distances (distinct) %
+	% the maximum distance is between top left corner and bottom right corner %
 	MaxDistance is PuzzleSize*PuzzleSize,
-	domain([D1,D2], 1, MaxDistance),
+	length(Distances, 2),
+	domain(Distances, 1, MaxDistance),
+
 	% create an auxiliar list with indexes for the list of houses %
 	% the elements in list of houses are lists with a pair of values X and Y %
 	% the predicate element only works with indexes, thus we need list of houses %
-	length(ListHouses, NumHouses),
-	length(Indexes, NumHouses),
-	domain(Indexes, 1, NumHouses),
-	all_distinct(Indexes),
-	labeling([],Indexes),
-	% find the distances %
-	findDistances(Indexes, ListHouses, [], PairedHouses, D1, D2),
-	statistics(walltime, _),
-	labeling([middle,max,up],[D1,D2]),
-	statistics(walltime, [_, ElapsedTime | _]),
-	% ensure all distances are different %
-	secondCheck([], L, PairedHouses, ListHouses),
-	sort(L, LSorted),
-	length(LSorted, ListSize), ListSize #= 2,
-	write(D1), write('-'),write(D2),
-	format('Time: ~3d', ElapsedTime), nl,
-	fd_statistics.
+	length(ListHouses, NumHouses), % instantiate the number of houses %
+	length(Indexes, NumHouses), % create list with 'number of houses' placeholders %
+	domain(Indexes, 1, NumHouses), % set domain as 1..'number of houses'%
+	all_distinct(Indexes), % each index must be unique %
+	labeling([],Indexes), % fill Indexes list %
 
-findDistances([], _, X, X, _, _).
-% The plog  %
-findDistances(Indexes, ListHouses, AuxPairedHouses, AllPairedHouses, D1, D2):-
+	% prepare statistics %
+	statistics(walltime, _),
+
+	% find distances %
+	findDistances(Indexes, ListHouses, [], PairedHouses, Distances),
+	labeling([middle,max,up], Distances),
+
+	% ensure there are exactly two different distances between paired houses %
+	exactlyTwoDistances(PairedHouses, ListHouses),
+
+	% end statistics %
+	statistics(walltime, [_, ElapsedTime | _]),
+
+	% display statistics %
+	format('Time: ~3d', ElapsedTime), nl,
+	fd_statistics, nl.
+
+	% display board %
+	
+
+%
+% Attempts to create pairs of houses enforcing two common distances for all pairs
+% +Indexes: List of indexes for the houses [1,2,...,N]. This list is auxiliar and each index maps to a house, i.e, a value 1 is mapped to the first house in ListHouses
+% +ListHouses: A list of houses, where each element is a list of two elements, the house coordinates [X,Y]
+% +AuxPairedHouses: Should start empty. It records already mapped houses
+% -AllPairedHouses: The final list of paired houses. This is a list of lists, where the inner lists have two values, the indexes of the paired houses
+% +ListDistances: A list of domain variables to be unified with the paired houses distances
+findDistances(Indexes, ListHouses, AllPairedHouses, ListDistances):-
+	findDistances(Indexes, ListHouses, [], AllPairedHouses, ListDistances).
+
+findDistances([], _, X, X, _).
+findDistances(Indexes, ListHouses, AuxPairedHouses, AllPairedHouses, ListDistances):-
 	% get the minimum and maximum %
 	%domain([IndexHouse1, IndexHouse2], 1, NumHouses),
 	% pick one house %
@@ -49,21 +69,44 @@ findDistances(Indexes, ListHouses, AuxPairedHouses, AllPairedHouses, D1, D2):-
 	IndexHouse1 #\= IndexHouse2,
 	% compute distance %
 	distance(P1, P2, D),
-	D #= D1 #\ D #= D2, % attempt to link D to D1 or D2
+	element(_, ListDistances, D), % attempt to link D to D1 or D2
 	% remove the indexes from list %
 	delete(Indexes, IndexHouse1, Aux1),
 	delete(Aux1, IndexHouse2, Aux2),
-	findDistances(Aux2, ListHouses, [ [IndexHouse1, IndexHouse2] | AuxPairedHouses], AllPairedHouses, D1, D2).
+	findDistances(Aux2, ListHouses, [ [IndexHouse1, IndexHouse2] | AuxPairedHouses], AllPairedHouses, ListDistances).
 
-secondCheck(L, L, [], _).
-secondCheck(ListDistances, L, [H|T], ListHouses):-
+%
+% Ensures there are exactly two different distances between the paired houses
+% +ListPairedHouses
+% +ListHouses
+%
+exactlyTwoDistances(ListPairedHouses, ListHouses):-
+	% get a list with all paired houses distances %
+	getAllDistances(ListPairedHouses, ListHouses, L),
+	
+	% sort and remove duplicates %
+	sort(L, LSorted),
+	
+	% ensure length two %
+	length(LSorted, ListSize),
+	ListSize #= 2.
+
+%
+% Gets all distances between paired houses
+% +ListPairedHouses
+% +ListHouses
+% -ListAllDistances
+getAllDistances(ListPairedHouses, ListHouses, ListAllDistances):-
+	getAllDistances([], ListAllDistances, ListPairedHouses, ListHouses).
+getAllDistances(L, L, [], _).
+getAllDistances(ListDistances, L, [H|T], ListHouses):-
 	nth0(0, H, House1),
 	nth0(1, H, House2),
 	nth1(House1, ListHouses, P1),
 	nth1(House2, ListHouses, P2),
 	distance(P1, P2, D),
 	append(ListDistances, [D], NewListDistaces),
-	secondCheck(NewListDistaces, L, T, ListHouses).
+	getAllDistances(NewListDistaces, L, T, ListHouses).
 
 %
 % Creates a matrix filled with 0's
