@@ -100,17 +100,6 @@ getCoords(List,Board,Size,Counter,FinalList):-
 getCoords(FinalList,_,_,_,FinalList):-
 	write('List Built'),nl.
 
-fillBoard(Board,Size,NewBoard,Points,List):-
-	write('Where do you want to put the House'),nl,
-	askCoords(Ypos-Xpos), 
-	checkInput(Xpos,Ypos,Size),
-	write(Board),
-	replace_in_matrix(Xpos-Ypos,Board,h,NewBoard),
-	display_withcoords(NewBoard),
-	append(Points,Xpos-Ypos,List),
-	fillBoard(NewBoard,Size,_,List,_).
-
-
 solveDefaultPuzzle(ListHouses, Size):-
 	clear_console,
 	write('---------------------------------------'),nl,
@@ -138,7 +127,7 @@ solvePuzzle5x5:-
 	solveDefaultPuzzle(ListHouses,5).
 
 solvePuzzle6x6:-
-	puzzle_6x6_2(ListHouses),
+	puzzle_6x6_1(ListHouses),
 	solveDefaultPuzzle(ListHouses,6).
 
 generatePuzzle:-

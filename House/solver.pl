@@ -19,7 +19,7 @@ solver(ListHouses, PuzzleSize, PairedHouses):-
 	length(Indexes, NumHouses), % create list with 'number of houses' placeholders %
 	domain(Indexes, 1, NumHouses), % set domain as 1..'number of houses'%
 	all_distinct(Indexes), % each index must be unique %
-	labeling([],Indexes), % fill Indexes list %
+	labeling([middle],Indexes), % fill Indexes list %
 
 	% prepare statistics %
 	statistics(walltime, _),
